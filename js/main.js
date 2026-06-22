@@ -1,5 +1,5 @@
 /**
- * ARA BLOC × BeLive - Investment Proposal
+ * Harbour View × BeLive - Investment Proposal
  * Interactive scripts
  */
 
@@ -138,7 +138,7 @@
     let html =
       '<strong>' + p.name + '</strong>' +
       '<div class="meta">' + p.type + '</div>' +
-      '<div class="dist">' + dist + ' from ARA BLOC</div>' +
+      '<div class="dist">' + dist + ' from Harbour View</div>' +
       '<div style="margin-top:6px;">' + p.note + '</div>';
     if (p.rates && p.rates.length) {
       html += '<div class="rates">';
@@ -236,14 +236,14 @@
         '</div>';
       L.marker(ARABLOC, { icon: subjectIcon, zIndexOffset: 1000 })
         .addTo(map)
-        .bindTooltip('★ ARA BLOC', {
+        .bindTooltip('★ Harbour View', {
           permanent: true,
           direction: 'right',
           offset: [16, 0],
           className: 'subject-label'
         })
         .bindPopup(
-          '<strong>ARA BLOC Residences</strong>' +
+          '<strong>Harbour View Residence</strong>' +
           '<div class="meta">★ Subject Property · Sime Darby Property</div>' +
           '<div>998 units · 26 storeys · 1.9 acres. Jalan PJU 1A/A, Ara Damansara, 47301 PJ.</div>' +
           subjectRates
