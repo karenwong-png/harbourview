@@ -254,7 +254,7 @@ section {
   border-radius: 14px;
 }
 .score-bar-fill { background: linear-gradient(90deg, var(--orange), var(--rust)); }
-.score-badge { background: rgba(245,133,36,0.12); color: var(--rust); border: 1px solid rgba(245,133,36,0.3); }
+.score-badge { background: rgba(245,133,36,0.12); color: var(--rust); border: 1px solid rgba(245,133,36,0.3); box-shadow: 0 4px 14px rgba(245,133,36,0.15); }
 
 /* ============ ECOSYSTEM STATEMENT → dark feature band ============ */
 .ecosystem-statement { background: var(--ink-deep); }
