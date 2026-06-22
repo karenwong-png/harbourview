@@ -56,52 +56,49 @@
   }
 
   // ============ Catchment Map ============
-  // ARA BLOC Residences — Jalan PJU 1A/A, Ara Damansara, 47301 Petaling Jaya
-  const ARABLOC = [3.1116, 101.5805];
+  // Harbour View Residence — Harbour Place, Jalan Chain Ferry, 12100 Butterworth, Penang
+  const HVR = [5.3985, 100.3733];
 
   // Distances are computed live (haversine / straight-line) from the coords below,
   // matching Google Maps' "Measure distance" tool and staying consistent with the rings.
   const PLACES = [
     // Condos (rental comparables — full pricing in popup)
-    { name: "Pacific Place", category: "condo", type: "Serviced Apartment", coords: [3.1098, 101.5772], note: "Established large-scale development with strong rental track record.",
-      rates: [["Master Room", "RM 1,200 – 1,600"], ["Single / Queen", "RM 800 – 1,200"], ["Balcony Room", "RM 700 – 950"]] },
-    { name: "Aratre' Residences", category: "condo", type: "Condominium", coords: [3.1078, 101.5795], note: "Completed, next to LRT Kelana Jaya line.",
-      rates: [["Master Room", "RM 1,300 – 1,700"], ["Single / Queen", "RM 850 – 1,300"], ["Balcony Room", "RM 800 – 1,000"]] },
-    { name: "Amara Residences", category: "condo", type: "Serviced Apartment", coords: [3.1140, 101.5758], note: "Covered walkway to Citta Mall & LRT Ara Damansara.",
-      rates: [["Master Room", "RM 1,400 – 1,800"], ["Single / Queen", "RM 900 – 1,400"], ["Balcony Room", "RM 850 – 1,050"]] },
-    { name: "Oasis Serviced Suites", category: "condo", type: "Serviced Suite", coords: [3.1128, 101.5825], note: "Part of Oasis Square commercial hub.",
-      rates: [["Master Room", "RM 1,200 – 1,500"], ["Single / Queen", "RM 800 – 1,200"], ["Balcony Room", "RM 750 – 950"]] },
-    { name: "Puncak Nusa Kelana", category: "condo", type: "Condominium", coords: [3.1012, 101.5920], note: "Mature freehold with consistent rental yield.",
-      rates: [["Master Room", "RM 1,100 – 1,400"], ["Single / Queen", "RM 750 – 1,100"], ["Balcony Room", "RM 700 – 900"]] },
+    { name: "Luminari", category: "condo", type: "Serviced Suites", coords: [5.3970, 100.3729], note: "Waterfront serviced suites within Harbour Place.",
+      rates: [["Master Room", "RM 850 – 1,100"], ["Single / Queen", "RM 600 – 850"], ["Balcony Room", "RM 550 – 750"]] },
+    { name: "Ocean View Residences", category: "condo", type: "Condominium", coords: [5.3950, 100.3724], note: "Sea-fronting condominium near Harbour Place.",
+      rates: [["Master Room", "RM 850 – 1,100"], ["Single / Queen", "RM 600 – 850"], ["Balcony Room", "RM 550 – 750"]] },
+    { name: "Woodsbury Suites", category: "condo", type: "Serviced Suites", coords: [5.3992, 100.3756], note: "Established Bagan Ajam serviced suites with strong rental demand.",
+      rates: [["Master Room", "RM 900 – 1,200"], ["Single / Queen", "RM 650 – 900"], ["Balcony Room", "RM 600 – 800"]] },
+    { name: "Sea View Tower", category: "condo", type: "Apartment", coords: [5.3952, 100.3715], note: "Waterfront apartment block near the ferry terminal.",
+      rates: [["Master Room", "RM 800 – 1,050"], ["Single / Queen", "RM 580 – 820"], ["Balcony Room", "RM 520 – 720"]] },
+    { name: "Wellesley Residences", category: "condo", type: "Serviced Residence", coords: [5.3970, 100.3725], note: "Integrated serviced residence within Harbour Place.",
+      rates: [["Master Room", "RM 900 – 1,150"], ["Single / Queen", "RM 650 – 900"], ["Balcony Room", "RM 600 – 780"]] },
 
     // Education
-    { name: "SK Lembah Subang", category: "education", type: "Primary School", coords: [3.1170, 101.5778], note: "Local national primary school." },
-    { name: "Japanese School of KL", category: "education", type: "International School", coords: [3.1240, 101.5755], note: "Established Japanese international institution." },
-    { name: "Lincoln University College", category: "education", type: "University", coords: [3.1010, 101.6015], note: "Healthcare-focused private university, Kelana Jaya." },
-    { name: "INTI International College Subang", category: "education", type: "College", coords: [3.0720, 101.5875], note: "Pre-uni, business and engineering programs." },
-    { name: "SEGi College Subang Jaya", category: "education", type: "College", coords: [3.0490, 101.5855], note: "Diploma, foundation and degree programs." },
-    { name: "Monash University Malaysia", category: "education", type: "University", coords: [3.0648, 101.6020], note: "Top-ranked Australian university campus, Bandar Sunway." },
-    { name: "Sunway University", category: "education", type: "University", coords: [3.0668, 101.6035], note: "Private research university next to Sunway Pyramid." },
+    { name: "SMK Convent Butterworth", category: "education", type: "Secondary School", coords: [5.3964, 100.3682], note: "Established secondary school, ~0.6 km away." },
+    { name: "Kwang Hwa Primary School", category: "education", type: "Primary School", coords: [5.4103, 100.3806], note: "Popular Chinese primary school in Butterworth." },
+    { name: "Chung Ling Butterworth", category: "education", type: "Secondary School", coords: [5.4339, 100.3931], note: "Renowned secondary school in Seberang Perai." },
+    { name: "Penang Int'l Dental College", category: "education", type: "Tertiary College", coords: [5.4033, 100.3656], note: "Dental college on Jalan Bagan Luar, Butterworth." },
+    { name: "UiTM Permatang Pauh", category: "education", type: "University", coords: [5.3821, 100.4172], note: "UiTM Penang branch campus, ~10,000 student capacity." },
 
     // Healthcare
-    { name: "Subang Jaya Medical Centre (SJMC)", category: "healthcare", type: "Hospital", coords: [3.0830, 101.5870], note: "Tertiary-care private medical centre." },
-    { name: "Columbia Asia Hospital Tropicana", category: "healthcare", type: "Hospital", coords: [3.1500, 101.6150], note: "Multi-specialty private hospital." },
-    { name: "Sunway Medical Centre", category: "healthcare", type: "Hospital", coords: [3.0685, 101.6050], note: "Leading quaternary-care private hospital." },
-    { name: "ParkCity Medical Centre", category: "healthcare", type: "Hospital", coords: [3.1860, 101.6310], note: "Boutique private hospital in Desa ParkCity." },
+    { name: "Hospital Seberang Jaya", category: "healthcare", type: "Government Hospital", coords: [5.3819, 100.3989], note: "Major government hospital serving Seberang Perai." },
+    { name: "Bagan Specialist Centre", category: "healthcare", type: "Private Hospital", coords: [5.4098, 100.3865], note: "Private specialist hospital in Taman Bagan." },
+    { name: "Sunway Medical Centre Penang", category: "healthcare", type: "Private Hospital", coords: [5.3987, 100.4009], note: "Private medical centre at Seberang Jaya." },
 
     // Commercial / Retail
-    { name: "Citta Mall", category: "commercial", type: "Lifestyle Mall", coords: [3.1110, 101.5772], note: "Open-air mall with Village Grocer, F&B, cinema." },
-    { name: "Oasis Square", category: "commercial", type: "Commercial Hub", coords: [3.1128, 101.5820], note: "Office suites, F&B and lifestyle centre." },
-    { name: "Evolve Concept Mall", category: "commercial", type: "Mall", coords: [3.1055, 101.5868], note: "Neighbourhood mall with Jaya Grocer, retail and F&B." },
-    { name: "Empire Subang", category: "commercial", type: "Mall", coords: [3.0840, 101.5870], note: "Lifestyle mall connected to Empire Hotel." },
-    { name: "Subang Parade", category: "commercial", type: "Mall", coords: [3.0843, 101.5882], note: "Long-established Subang Jaya retail mall." },
-    { name: "Tropicana Gardens Mall", category: "commercial", type: "Mall", coords: [3.1500, 101.6170], note: "Premium retail at MRT Surian." },
-    { name: "Sunway Pyramid", category: "commercial", type: "Mall", coords: [3.0725, 101.6072], note: "Iconic mega-mall with retail, F&B and entertainment." },
+    { name: "Penang Sentral Mall", category: "commercial", type: "Retail / Transit Mall", coords: [5.3958, 100.3655], note: "Retail within the Penang Sentral hub." },
+    { name: "Sunway Carnival Mall", category: "commercial", type: "Shopping Mall", coords: [5.3988, 100.3980], note: "Major regional mall at Seberang Jaya." },
+    { name: "Megamall Penang (Prai)", category: "commercial", type: "Shopping Mall", coords: [5.3770, 100.3999], note: "Established mall beside the North–South Expressway." },
+    { name: "GEM Megamall", category: "commercial", type: "Mall (upcoming)", coords: [5.3806, 100.3965], note: "Upcoming mega-mall in Seberang Perai." },
+    { name: "Econsave Butterworth", category: "commercial", type: "Hypermarket", coords: [5.3992, 100.3765], note: "Hypermarket next to Harbour Place on Jalan Chain Ferry." },
+    { name: "Lotus's Bagan Ajam", category: "commercial", type: "Hypermarket", coords: [5.4105, 100.3795], note: "Hypermarket at Bagan Ajam, Butterworth." },
 
     // Transport
-    { name: "Ara Damansara LRT Station", category: "transport", type: "LRT · Kelana Jaya Line", coords: [3.1058, 101.5808], note: "Direct line to KL Sentral, Bangsar South, KLCC." },
-    { name: "Lembah Subang LRT Station", category: "transport", type: "LRT · Kelana Jaya Line", coords: [3.1208, 101.5868], note: "Alternate boarding point on the same line." },
-    { name: "Subang Skypark (SZB) Airport", category: "transport", type: "Airport", coords: [3.1305, 101.5475], note: "Domestic and regional flights from PJ's doorstep." }
+    { name: "Penang Sentral", category: "transport", type: "Integrated Transport Hub", coords: [5.3955, 100.3651], note: "KTM/ETS, ferry & bus hub; planned LRT Mutiara Line terminus." },
+    { name: "Butterworth KTM", category: "transport", type: "KTM / ETS Station", coords: [5.3934, 100.3666], note: "Intercity & ETS rail station at Penang Sentral." },
+    { name: "Sultan Abdul Halim Ferry Terminal", category: "transport", type: "Ferry Terminal", coords: [5.3947, 100.3644], note: "Pedestrian ferry to George Town (10–15 min)." },
+    { name: "Penang Bridge (mainland)", category: "transport", type: "Expressway Bridge", coords: [5.3634, 100.3987], note: "Mainland on-ramp to Penang Island via Perai." }
   ];
 
   // Haversine straight-line distance in km
@@ -134,7 +131,7 @@
   }
 
   function popupHtml(p) {
-    const dist = fmtKm(distanceKm(ARABLOC, p.coords));
+    const dist = fmtKm(distanceKm(HVR, p.coords));
     let html =
       '<strong>' + p.name + '</strong>' +
       '<div class="meta">' + p.type + '</div>' +
@@ -161,7 +158,7 @@
     const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
     const map = L.map(mapEl, {
-      center: ARABLOC,
+      center: HVR,
       zoom: 14,
       scrollWheelZoom: false,
       dragging: !isTouch,
@@ -178,13 +175,13 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
     }).addTo(map);
 
-    // Dashed catchment rings (5 km & 10 km)
+    // Dashed catchment rings (3 km & 6 km)
     const rings = [
-      { radius: 5000, label: '5 km', opacity: 0.06 },
-      { radius: 10000, label: '10 km', opacity: 0.04 }
+      { radius: 3000, label: '3 km', opacity: 0.06 },
+      { radius: 6000, label: '6 km', opacity: 0.04 }
     ];
     rings.forEach((ring) => {
-      L.circle(ARABLOC, {
+      L.circle(HVR, {
         radius: ring.radius,
         color: '#c64a2c',
         weight: 1.5,
@@ -195,8 +192,8 @@
         interactive: false
       }).addTo(map);
       // Ring label at the north edge of each ring
-      const labelLat = ARABLOC[0] + ring.radius / 111320;
-      L.marker([labelLat, ARABLOC[1]], {
+      const labelLat = HVR[0] + ring.radius / 111320;
+      L.marker([labelLat, HVR[1]], {
         interactive: false,
         icon: L.divIcon({
           className: 'ring-label-wrap',
@@ -230,11 +227,11 @@
     if (subjectIcon) {
       const subjectRates =
         '<div class="rates">' +
-        '<div class="rate-row"><span>Master Room</span><span class="rate-val">RM 1,400 – 1,800</span></div>' +
-        '<div class="rate-row"><span>Single / Queen</span><span class="rate-val">RM 900 – 1,400</span></div>' +
-        '<div class="rate-row"><span>Balcony Room</span><span class="rate-val">RM 850 – 1,100</span></div>' +
+        '<div class="rate-row"><span>Master Room</span><span class="rate-val">RM 900 – 1,200</span></div>' +
+        '<div class="rate-row"><span>Single / Queen</span><span class="rate-val">RM 650 – 900</span></div>' +
+        '<div class="rate-row"><span>Balcony Room</span><span class="rate-val">RM 600 – 800</span></div>' +
         '</div>';
-      L.marker(ARABLOC, { icon: subjectIcon, zIndexOffset: 1000 })
+      L.marker(HVR, { icon: subjectIcon, zIndexOffset: 1000 })
         .addTo(map)
         .bindTooltip('★ Harbour View', {
           permanent: true,
@@ -244,8 +241,8 @@
         })
         .bindPopup(
           '<strong>Harbour View Residence</strong>' +
-          '<div class="meta">★ Subject Property · Sime Darby Property</div>' +
-          '<div>998 units · 26 storeys · 1.9 acres. Jalan PJU 1A/A, Ara Damansara, 47301 PJ.</div>' +
+          '<div class="meta">★ Subject Property · OSK Property</div>' +
+          '<div>373 freehold units · 32 storeys · 2.04 acres. Jalan Chain Ferry, Harbour Place, 12100 Butterworth, Penang.</div>' +
           subjectRates
         );
     }
@@ -255,7 +252,7 @@
     PLACES.forEach((p) => {
       const icon = makePin(p.category, false);
       if (!icon) return;
-      const dist = fmtKm(distanceKm(ARABLOC, p.coords));
+      const dist = fmtKm(distanceKm(HVR, p.coords));
       const marker = L.marker(p.coords, { icon: icon })
         .bindPopup(popupHtml(p))
         .bindTooltip(dist, {
@@ -306,8 +303,8 @@
 
     applyFilter();
 
-    // Zoom out to fit both the 5 km and 10 km rings (10 km radius => ~22 km square)
-    const ringBounds = L.latLng(ARABLOC[0], ARABLOC[1]).toBounds(22000);
+    // Zoom out to fit both the 3 km and 6 km rings (6 km radius => ~14 km square)
+    const ringBounds = L.latLng(HVR[0], HVR[1]).toBounds(14000);
     map.fitBounds(ringBounds, { padding: [10, 10] });
 
     // Re-render once visible (handles initial sizing inside hidden flex containers)
