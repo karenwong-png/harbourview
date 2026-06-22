@@ -23,7 +23,7 @@ window.CONDO = {
   // ---- IMAGE ASSETS (drop these files into the repo root) -----------------
   assets: {
     favicon:      "/favicon.png",                    // (keep BeLive favicon)
-    heroRender:   "/Harbour-View-Residence.jpg",     // 🟡 building render (official gallery has 7 perspectives)
+    heroRender:   "/HarbourViewResidence-condo.png",     // 🟡 building render (official gallery has 7 perspectives)
     developerLogo:"/osk_logo.png",                   // 🟡 OSK Property wordmark (replaces simedarby_logo.png)
     condoLogo:    "/harbourview_logo.png",           // 🟡 condo logo for the location section
   },
