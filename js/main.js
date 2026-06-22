@@ -320,7 +320,7 @@
       label: "Type A · 950 sq ft · 3R2B",
       spec: "950 sq ft · 3R2B",
       floorplan: "/HBV_FloorplanA.png",
-      defaultPrice: 350000,
+      defaultPrice: 495000,
       wholeLo: 1500, wholeHi: 1800,
       rooms: [
         { id: "r2", name: "Room 2 (Queen Room)",          lo: 600, hi: 750 },
@@ -329,14 +329,14 @@
       ],
       extras: [
         { id: "balcony", name: "Room 1 (Queen Room · Optimized)", lo: 500, hi: 650 },
-        { id: "parking", name: "Parking Bay",                     lo: 150, hi: 150 }
+        { id: "parking", name: "Parking Bay",                     lo: 200, hi: 200 }
       ]
     },
     A1: {
       label: "Type A1 · 1,126 sq ft · 3R2B",
       spec: "1,126 sq ft · 3R2B",
       floorplan: "/HBV_FloorplanA1.png",
-      defaultPrice: 430000,
+      defaultPrice: 544000,
       wholeLo: 1700, wholeHi: 2000,
       rooms: [
         { id: "r2", name: "Room 2 (Queen Room)",          lo: 600, hi: 780 },
@@ -345,14 +345,14 @@
       ],
       extras: [
         { id: "balcony", name: "Room 1 (Queen Room · Optimized)", lo: 520, hi: 680 },
-        { id: "parking", name: "Parking Bay",                     lo: 150, hi: 150 }
+        { id: "parking", name: "Parking Bay",                     lo: 200, hi: 200 }
       ]
     },
     B: {
       label: "Type B · 950 sq ft · 3B2R",
       spec: "950 sq ft · 3B2R",
       floorplan: "/HBV_FloorplanB.png",
-      defaultPrice: 520000,
+      defaultPrice: 505000,
       wholeLo: 1900, wholeHi: 2300,
       rooms: [
         { id: "r2", name: "Room 2 (Queen Room)",          lo: 620, hi:  800 },
@@ -361,7 +361,7 @@
       ],
       extras: [
         { id: "balcony", name: "Room 1 (Queen Room · Optimized)", lo: 520, hi: 700 },
-        { id: "parking", name: "Parking Bay",                     lo: 150, hi: 150 }
+        { id: "parking", name: "Parking Bay",                     lo: 200, hi: 200 }
       ]
     }
   };
@@ -396,7 +396,7 @@
           '<div class="arb-floorplan"><img id="arb-floorplan-img" src="" alt="Harbour View floor plan" /></div>' +
           '<div class="arb-field">' +
             '<div class="arb-field-row"><label>SPA Purchase Price</label><span class="arb-val" id="arb-price-val">RM 0</span></div>' +
-            '<input type="range" id="arb-price-range" min="200000" max="650000" step="5000" />' +
+            '<input type="range" id="arb-price-range" min="200000" max="650000" step="1000" />' +
             '<div class="arb-field-row arb-ticks"><span class="arb-hint">RM 200k</span><span class="arb-hint" id="arb-spahint">Est. SPA</span><span class="arb-hint">RM 650k</span></div>' +
           '</div>' +
           '<div class="arb-field">' +
