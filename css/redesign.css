@@ -129,13 +129,45 @@ section {
 .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
 .nav-cta { padding: 10px 20px; font-size: 0.84rem; }
 
-/* ============ HERO ============ */
+/* ============ HERO (banner background, copy on left) ============ */
 .hero {
   min-height: auto;
   padding: 84px 7vw 104px;
   background: radial-gradient(120% 90% at 85% 0%, rgba(245,133,36,0.10), transparent 55%), var(--cream-soft);
 }
 .hero-grid { gap: 64px; align-items: center; }
+
+/* Full-bleed banner hero */
+.hero-banner {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  padding: 96px 7vw;
+  background: var(--cream) url('/HBV_top_banner.jpg') no-repeat;
+  background-size: cover;
+  background-position: center right;
+}
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255,253,249,0.97) 0%,
+    rgba(255,253,249,0.92) 32%,
+    rgba(255,253,249,0.55) 58%,
+    rgba(255,253,249,0.10) 80%,
+    rgba(255,253,249,0) 100%);
+  z-index: 0;
+}
+.hero-banner .hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.hero-banner .hero-copy { max-width: 560px; }
 .hero-copy .eyebrow { margin-bottom: 22px; }
 .hero h1 {
   font-size: clamp(2.4rem, 4.8vw, 3.9rem);
@@ -256,6 +288,11 @@ footer { padding: 40px 7vw; }
 @media (max-width: 768px) {
   section { padding: 74px 6vw; }
   .hero { padding: 52px 6vw 68px; }
+  .hero-banner { min-height: auto; padding: 56px 6vw 64px; background-position: center; }
+  .hero-banner::before {
+    background: linear-gradient(180deg, rgba(255,253,249,0.96) 0%, rgba(255,253,249,0.90) 70%, rgba(255,253,249,0.82) 100%);
+  }
+  .hero-banner .hero-copy { max-width: none; }
   .hero h1 .rust-stack .arabloc-wordmark { height: 50px; }
   .hero h1 .belive-logo-wrap img { height: 40px; }
   .hero-meta { gap: 22px; flex-wrap: wrap; }
