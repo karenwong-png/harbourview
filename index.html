@@ -652,12 +652,21 @@
         <div class="catchment-side-head">
           <span class="side-label">FILTER MAP</span>
           <label class="show-all">
-            <input type="checkbox" id="show-all-toggle" checked />
+            <input type="checkbox" id="show-all-toggle" />
             <span>Show all</span>
           </label>
         </div>
 
-        <button class="cat-card active" data-cat="education">
+        <button class="cat-card active" data-cat="condo">
+          <div class="cat-card-head">
+            <span class="cat-dot dot-condo"></span>
+            <span class="cat-name">Nearby Condo</span>
+          </div>
+          <div class="cat-items">Luminari · Ocean View · Woodsbury · Sea View Tower · Wellesley</div>
+          <div class="cat-summary">Harbour Place comparables — room-type rental pricing</div>
+        </button>
+
+        <button class="cat-card" data-cat="education">
           <div class="cat-card-head">
             <span class="cat-dot dot-education"></span>
             <span class="cat-name">Education</span>
@@ -682,15 +691,6 @@
           </div>
           <div class="cat-items">Seberang Jaya Hospital · Penang Sentral Hospital* · Bagan Specialist · Sunway Medical · KPJ Penang</div>
           <div class="cat-summary">Govt + private hospitals nearby</div>
-        </button>
-
-        <button class="cat-card" data-cat="condo">
-          <div class="cat-card-head">
-            <span class="cat-dot dot-condo"></span>
-            <span class="cat-name">Nearby Condo</span>
-          </div>
-          <div class="cat-items">Luminari · Ocean View · Woodsbury · Sea View Tower · Wellesley</div>
-          <div class="cat-summary">Harbour Place comparables — room-type rental pricing</div>
         </button>
 
         <button class="cat-card" data-cat="transport">
@@ -1170,6 +1170,6 @@
 
 <script src="/vendor/leaflet/leaflet.js"></script>
 <script src="/js/condo-data.js?v=20260619" defer></script>
-<script src="/js/main.js?v=20260622l" defer></script>
+<script src="/js/main.js?v=20260622m" defer></script>
 </body>
 </html>
