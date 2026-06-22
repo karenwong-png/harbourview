@@ -156,6 +156,13 @@ section {
   text-transform: uppercase;
   color: var(--rust);
 }
+.hero-hb-logo {
+  display: block;
+  height: 52px;
+  width: auto;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
 .hero h1 {
   font-size: clamp(3rem, 6vw, 5.5rem);
   margin-bottom: 24px;
@@ -2095,8 +2102,25 @@ footer {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.85rem;
 }
-footer .belive-mark {
+footer .footer-brands {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   margin-bottom: 10px;
+}
+footer .footer-brands .belive-mark {
+  margin-bottom: 0;
+}
+footer .footer-hb {
+  height: 32px;
+  width: auto;
+  display: inline-block;
+}
+footer .footer-x {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.7);
 }
 footer .belive-mark img {
   height: 28px;
