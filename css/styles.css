@@ -2301,6 +2301,7 @@ footer .belive-mark img {
 .dot-education { background: #2bbcb4; }
 .dot-healthcare { background: #d9395e; }
 .dot-commercial { background: #b08a3f; }
+.dot-hotel { background: #7e57c2; }
 .dot-transport { background: #5d6d7a; }
 
 .map-wrap {
@@ -2483,6 +2484,7 @@ footer .belive-mark img {
 .map-pin.education { background: #2bbcb4; }
 .map-pin.healthcare { background: #d9395e; }
 .map-pin.commercial { background: #b08a3f; }
+.map-pin.hotel { background: #7e57c2; }
 .map-pin.transport { background: #5d6d7a; }
 
 .map-legend {

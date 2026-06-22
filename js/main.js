@@ -62,41 +62,37 @@
   // Distances are computed live (haversine / straight-line) from the coords below,
   // matching Google Maps' "Measure distance" tool and staying consistent with the rings.
   const PLACES = [
-    // Condos (rental comparables — full pricing in popup)
-    { name: "Luminari", category: "condo", type: "Serviced Suites", coords: [5.3970, 100.3729], note: "Waterfront serviced suites within Harbour Place.",
-      rates: [["Master Room", "RM 850 – 1,100"], ["Single / Queen", "RM 600 – 850"], ["Balcony Room", "RM 550 – 750"]] },
-    { name: "Ocean View Residences", category: "condo", type: "Condominium", coords: [5.3950, 100.3724], note: "Sea-fronting condominium near Harbour Place.",
-      rates: [["Master Room", "RM 850 – 1,100"], ["Single / Queen", "RM 600 – 850"], ["Balcony Room", "RM 550 – 750"]] },
-    { name: "Woodsbury Suites", category: "condo", type: "Serviced Suites", coords: [5.3992, 100.3756], note: "Established Bagan Ajam serviced suites with strong rental demand.",
-      rates: [["Master Room", "RM 900 – 1,200"], ["Single / Queen", "RM 650 – 900"], ["Balcony Room", "RM 600 – 800"]] },
-    { name: "Sea View Tower", category: "condo", type: "Apartment", coords: [5.3952, 100.3715], note: "Waterfront apartment block near the ferry terminal.",
-      rates: [["Master Room", "RM 800 – 1,050"], ["Single / Queen", "RM 580 – 820"], ["Balcony Room", "RM 520 – 720"]] },
-    { name: "Wellesley Residences", category: "condo", type: "Serviced Residence", coords: [5.3970, 100.3725], note: "Integrated serviced residence within Harbour Place.",
-      rates: [["Master Room", "RM 900 – 1,150"], ["Single / Queen", "RM 650 – 900"], ["Balcony Room", "RM 600 – 780"]] },
-
     // Education
-    { name: "SMK Convent Butterworth", category: "education", type: "Secondary School", coords: [5.3964, 100.3682], note: "Established secondary school, ~0.6 km away." },
-    { name: "Kwang Hwa Primary School", category: "education", type: "Primary School", coords: [5.4103, 100.3806], note: "Popular Chinese primary school in Butterworth." },
-    { name: "Chung Ling Butterworth", category: "education", type: "Secondary School", coords: [5.4339, 100.3931], note: "Renowned secondary school in Seberang Perai." },
+    { name: "SK Convent Butterworth", category: "education", type: "Primary School", coords: [5.3966, 100.3684], note: "National primary school, ~0.6 km away." },
+    { name: "SMK Convent Butterworth", category: "education", type: "Secondary School", coords: [5.3964, 100.3682], note: "Established secondary school near Harbour Place." },
+    { name: "SJK(C) Chung Hwa Pusat Butterworth", category: "education", type: "Primary School", coords: [5.4030, 100.3740], note: "Chinese primary school in central Butterworth." },
+    { name: "SJK(C) Chung Hwa 1", category: "education", type: "Primary School", coords: [5.4143, 100.3775], note: "Chinese primary school, Butterworth." },
+    { name: "SJK(C) Kwang Hwa", category: "education", type: "Primary School", coords: [5.4103, 100.3806], note: "Popular Chinese primary school in Butterworth." },
     { name: "Penang Int'l Dental College", category: "education", type: "Tertiary College", coords: [5.4033, 100.3656], note: "Dental college on Jalan Bagan Luar, Butterworth." },
     { name: "UiTM Permatang Pauh", category: "education", type: "University", coords: [5.3821, 100.4172], note: "UiTM Penang branch campus, ~10,000 student capacity." },
-
-    // Healthcare
-    { name: "Hospital Seberang Jaya", category: "healthcare", type: "Government Hospital", coords: [5.3819, 100.3989], note: "Major government hospital serving Seberang Perai." },
-    { name: "Bagan Specialist Centre", category: "healthcare", type: "Private Hospital", coords: [5.4098, 100.3865], note: "Private specialist hospital in Taman Bagan." },
-    { name: "Sunway Medical Centre Penang", category: "healthcare", type: "Private Hospital", coords: [5.3987, 100.4009], note: "Private medical centre at Seberang Jaya." },
 
     // Commercial / Retail
     { name: "Penang Sentral Mall", category: "commercial", type: "Retail / Transit Mall", coords: [5.3958, 100.3655], note: "Retail within the Penang Sentral hub." },
     { name: "Sunway Carnival Mall", category: "commercial", type: "Shopping Mall", coords: [5.3988, 100.3980], note: "Major regional mall at Seberang Jaya." },
-    { name: "Megamall Penang (Prai)", category: "commercial", type: "Shopping Mall", coords: [5.3770, 100.3999], note: "Established mall beside the North–South Expressway." },
     { name: "GEM Megamall", category: "commercial", type: "Mall (upcoming)", coords: [5.3806, 100.3965], note: "Upcoming mega-mall in Seberang Perai." },
+    { name: "Megamall Penang (Prai)", category: "commercial", type: "Shopping Mall", coords: [5.3770, 100.3999], note: "Established mall beside the North–South Expressway." },
     { name: "Econsave Butterworth", category: "commercial", type: "Hypermarket", coords: [5.3992, 100.3765], note: "Hypermarket next to Harbour Place on Jalan Chain Ferry." },
     { name: "Lotus's Bagan Ajam", category: "commercial", type: "Hypermarket", coords: [5.4105, 100.3795], note: "Hypermarket at Bagan Ajam, Butterworth." },
 
-    // Transport
+    // Healthcare
+    { name: "Hospital Seberang Jaya", category: "healthcare", type: "Government Hospital", coords: [5.3819, 100.3989], note: "Major government hospital serving Seberang Perai." },
+    { name: "Penang Sentral Hospital", category: "healthcare", type: "Hospital (future)", coords: [5.3955, 100.3651], note: "Planned hospital near the Penang Sentral hub." },
+    { name: "Bagan Specialist Centre", category: "healthcare", type: "Private Hospital", coords: [5.4098, 100.3865], note: "Private specialist hospital in Taman Bagan." },
+    { name: "Sunway Medical Centre Penang", category: "healthcare", type: "Private Hospital", coords: [5.3987, 100.4009], note: "Private medical centre at Seberang Jaya." },
+    { name: "KPJ Penang Specialist", category: "healthcare", type: "Private Hospital", coords: [5.3690, 100.4343], note: "KPJ specialist hospital at Bandar Perda." },
+
+    // Hotel (3–5 star)
+    { name: "Sunway Hotel Seberang Jaya", category: "hotel", type: "4-Star Hotel", coords: [5.3956, 100.3981], note: "4-star hotel adjoining Sunway Carnival Mall." },
+    { name: "The Light Hotel", category: "hotel", type: "4-Star Hotel", coords: [5.3944, 100.3986], note: "Hotel within the Seberang Jaya commercial cluster." },
+
+    // Accessibility (transport hub + highways)
     { name: "Penang Sentral", category: "transport", type: "Integrated Transport Hub", coords: [5.3955, 100.3651], note: "KTM/ETS, ferry & bus hub; planned LRT Mutiara Line terminus." },
-    { name: "Butterworth KTM", category: "transport", type: "KTM / ETS Station", coords: [5.3934, 100.3666], note: "Intercity & ETS rail station at Penang Sentral." },
+    { name: "KTM Butterworth", category: "transport", type: "KTM / ETS Station", coords: [5.3934, 100.3666], note: "Intercity & ETS rail station at Penang Sentral." },
     { name: "Sultan Abdul Halim Ferry Terminal", category: "transport", type: "Ferry Terminal", coords: [5.3947, 100.3644], note: "Pedestrian ferry to George Town (10–15 min)." },
     { name: "Penang Bridge (mainland)", category: "transport", type: "Expressway Bridge", coords: [5.3634, 100.3987], note: "Mainland on-ramp to Penang Island via Perai." }
   ];
@@ -273,7 +269,7 @@
     function applyFilter() {
       const allOn = showAll && showAll.checked;
       const activeCard = document.querySelector('.cat-card.active');
-      const activeCat = activeCard ? activeCard.dataset.cat : 'condo';
+      const activeCat = activeCard ? activeCard.dataset.cat : 'education';
 
       Object.keys(layersByCat).forEach((c) => {
         const layer = layersByCat[c];

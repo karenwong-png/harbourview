@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
-<link rel="stylesheet" href="/css/styles.css?v=20260622d" />
+<link rel="stylesheet" href="/css/styles.css?v=20260622k" />
 <link rel="stylesheet" href="/css/redesign.css?v=20260622j" />
 </head>
 <body>
@@ -635,7 +635,7 @@
   <div class="container">
     <div class="catchment-chip">MARKET INSIGHTS</div>
     <h2 class="catchment-title">Catchment Map · <span class="accent-orange">Butterworth</span></h2>
-    <p class="catchment-sub">The catchment around Harbour View Residence with 3 km and 6 km rings — sibling condos, schools, hospitals, malls and transit, each labelled with its distance from Harbour View.</p>
+    <p class="catchment-sub">The catchment around Harbour View Residence with 3 km and 6 km rings — schools, hospitals, malls, hotels and transport links, each labelled with its distance from Harbour View.</p>
 
     <div class="catchment-grid">
       <div class="map-wrap">
@@ -657,31 +657,13 @@
           </label>
         </div>
 
-        <button class="cat-card active" data-cat="condo">
-          <div class="cat-card-head">
-            <span class="cat-dot dot-condo"></span>
-            <span class="cat-name">Condo Nearby</span>
-          </div>
-          <div class="cat-items">Harbour View (★) · Luminari · Ocean View · Woodsbury · Sea View Tower · Wellesley</div>
-          <div class="cat-summary">Subject + 5 Harbour Place comparables</div>
-        </button>
-
-        <button class="cat-card" data-cat="education">
+        <button class="cat-card active" data-cat="education">
           <div class="cat-card-head">
             <span class="cat-dot dot-education"></span>
             <span class="cat-name">Education</span>
           </div>
-          <div class="cat-items">SMK Convent · Kwang Hwa · Chung Ling Butterworth · Dental College · UiTM Permatang Pauh</div>
+          <div class="cat-items">SK & SMK Convent · Chung Hwa Pusat · Chung Hwa 1 · Kwang Hwa · Dental College · UiTM Permatang Pauh</div>
           <div class="cat-summary">Schools + tertiary within ~5 km</div>
-        </button>
-
-        <button class="cat-card" data-cat="healthcare">
-          <div class="cat-card-head">
-            <span class="cat-dot dot-healthcare"></span>
-            <span class="cat-name">Healthcare</span>
-          </div>
-          <div class="cat-items">Seberang Jaya Hospital · Bagan Specialist Centre · Sunway Medical Penang</div>
-          <div class="cat-summary">Govt + private hospitals within ~3 km</div>
         </button>
 
         <button class="cat-card" data-cat="commercial">
@@ -689,22 +671,40 @@
             <span class="cat-dot dot-commercial"></span>
             <span class="cat-name">Commercial</span>
           </div>
-          <div class="cat-items">Penang Sentral Mall · Sunway Carnival · GEM Megamall* · Megamall · Econsave · Lotus's</div>
-          <div class="cat-summary">Malls & hypermarkets within 6 km</div>
+          <div class="cat-items">Penang Sentral Mall · Sunway Carnival · GEM Megamall* · Megamall Prai · Econsave · Lotus's Bagan Ajam</div>
+          <div class="cat-summary">Malls & hypermarkets within ~6 km</div>
+        </button>
+
+        <button class="cat-card" data-cat="healthcare">
+          <div class="cat-card-head">
+            <span class="cat-dot dot-healthcare"></span>
+            <span class="cat-name">Healthcare</span>
+          </div>
+          <div class="cat-items">Seberang Jaya Hospital · Penang Sentral Hospital* · Bagan Specialist · Sunway Medical · KPJ Penang</div>
+          <div class="cat-summary">Govt + private hospitals nearby</div>
+        </button>
+
+        <button class="cat-card" data-cat="hotel">
+          <div class="cat-card-head">
+            <span class="cat-dot dot-hotel"></span>
+            <span class="cat-name">Hotel</span>
+          </div>
+          <div class="cat-items">Sunway Hotel Seberang Jaya · The Light Hotel · Hompass Hotel · Sara Hotel</div>
+          <div class="cat-summary">3–5 star hotels within ~3 km</div>
         </button>
 
         <button class="cat-card" data-cat="transport">
           <div class="cat-card-head">
             <span class="cat-dot dot-transport"></span>
-            <span class="cat-name">Transport</span>
+            <span class="cat-name">Accessibility</span>
           </div>
-          <div class="cat-items">Penang Sentral · Butterworth KTM · Ferry Terminal · Penang Bridge · LRT Mutiara Line*</div>
+          <div class="cat-items">Penang Sentral · KTM Butterworth · Ferry Terminal · Penang Bridge · LRT Mutiara Line* · BORR / B–Kulim / N–S Expressway</div>
           <div class="cat-summary">~1 km to Penang Sentral hub</div>
         </button>
       </aside>
     </div>
 
-    <p class="catchment-footnote">Click a category card to filter the map — each pin then shows its distance label. Tick <strong>Show all</strong> to see every catchment pin within the 3 km and 6 km rings. Click any pin for details; the ★ subject property and condo comparables also show full rental pricing. Distances are straight-line from Harbour View (matching Google Maps' measure-distance tool).</p>
+    <p class="catchment-footnote">Click a category card to filter the map — each pin then shows its distance label. Tick <strong>Show all</strong> to see every catchment pin within the 3 km and 6 km rings. Click any pin for details. Distances are straight-line from Harbour View (matching Google Maps' measure-distance tool). Amenities per OSK Property's Harbour View Residence material; some upcoming (*) and coordinates approximate.</p>
   </div>
 </section>
 
@@ -1170,6 +1170,6 @@
 
 <script src="/vendor/leaflet/leaflet.js"></script>
 <script src="/js/condo-data.js?v=20260619" defer></script>
-<script src="/js/main.js?v=20260622h" defer></script>
+<script src="/js/main.js?v=20260622k" defer></script>
 </body>
 </html>
