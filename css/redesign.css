@@ -1,70 +1,92 @@
 /* ============================================================
-   Harbour View × BeLive — Modern Minimal Redesign Layer
-   Loaded AFTER styles.css to re-skin the page with a cleaner,
-   lighter, more spacious design while keeping the warm brand.
+   Harbour View × BeLive — Bold Modern-Minimal Redesign (v2)
+   A full re-skin across every section: flat alternating bands,
+   a dark feature section, a unified premium card system,
+   bigger type, and a stronger hero. Loaded AFTER styles.css.
    ============================================================ */
 
-/* ---- Refined token palette (warm but cleaner) ---- */
+/* ---- Refined token palette (warm, clean, with a deep ink) ---- */
 :root {
-  --cream: #f9f4ec;
-  --cream-soft: #fffdfa;
+  --cream: #f6efe4;
+  --cream-soft: #fffdf9;
   --paper: #ffffff;
-  --ink: #1b242a;
-  --ink-soft: #56636c;
-  --muted: #95a0a8;
-  --line: rgba(27, 36, 42, 0.10);
-  --line-soft: rgba(27, 36, 42, 0.06);
-  --shadow-sm: 0 1px 3px rgba(27, 36, 42, 0.05);
-  --shadow-md: 0 10px 30px rgba(27, 36, 42, 0.07);
-  --shadow-lg: 0 28px 60px rgba(27, 36, 42, 0.10);
+  --ink: #18222a;
+  --ink-deep: #141d24;
+  --ink-soft: #54616b;
+  --muted: #93a0a8;
+  --line: rgba(24, 34, 42, 0.10);
+  --line-soft: rgba(24, 34, 42, 0.06);
+  --shadow-sm: 0 1px 3px rgba(24, 34, 42, 0.05);
+  --shadow-md: 0 12px 34px rgba(24, 34, 42, 0.08);
+  --shadow-lg: 0 30px 70px rgba(24, 34, 42, 0.12);
   --nav-h: 66px;
+  --radius: 18px;
 }
 
 /* ---- Base ---- */
 body {
-  background: var(--cream-soft);
+  background: var(--paper);
   color: var(--ink);
   font-weight: 400;
-  letter-spacing: 0.002em;
   padding-top: var(--nav-h);
 }
-
-/* Modern minimal = no blurry decorative blobs */
 .blob { display: none !important; }
+h1, h2, h3, .display { letter-spacing: -0.03em; font-weight: 700; }
 
-h1, h2, h3, .display { letter-spacing: -0.028em; font-weight: 700; }
-
-/* ---- Section rhythm: more whitespace, hairline separators ---- */
+/* ---- Section rhythm + flat alternating bands ---- */
 section {
-  padding: 104px 7vw;
+  padding: 112px 7vw;
   scroll-margin-top: calc(var(--nav-h) + 10px);
+  border: none;
 }
 .container { max-width: 1180px; }
 
-/* ---- Eyebrow: smaller, brand-accent, refined ---- */
-.eyebrow {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: var(--orange);
-  margin-bottom: 16px;
-}
-.eyebrow::before { width: 20px; height: 1.5px; background: var(--orange); }
+.coliving,
+.spacify,
+.reno-showcase,
+.partners,
+.location,
+.scoring,
+.roi-section            { background: var(--paper); }
+.developments,
+.renoxpert,
+.marketing,
+.trusted,
+.catchment,
+.proof,
+.contact                { background: var(--cream); }
 
-/* ---- Section titles & leads ---- */
-.section-title {
-  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+/* ---- Eyebrow → pill chip ---- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.7rem;
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-bottom: 18px;
+  letter-spacing: 0.18em;
+  color: var(--orange);
+  background: rgba(245, 133, 36, 0.10);
+  border: 1px solid rgba(245, 133, 36, 0.22);
+  padding: 7px 14px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+}
+.eyebrow::before { display: none; }
+
+/* ---- Titles & leads ---- */
+.section-title {
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  margin-bottom: 20px;
 }
 .section-lead {
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   line-height: 1.75;
   color: var(--ink-soft);
   max-width: 720px;
-  margin-bottom: 54px;
+  margin-bottom: 56px;
 }
 
 /* ============ STICKY NAV ============ */
@@ -77,7 +99,7 @@ section {
   align-items: center;
   justify-content: space-between;
   padding: 0 7vw;
-  background: rgba(255, 253, 250, 0.82);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line-soft);
@@ -88,29 +110,18 @@ section {
 .nav-brand .nav-belive { height: 22px; }
 .nav-links { display: flex; align-items: center; gap: 30px; }
 .nav-links a {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--ink-soft);
-  text-decoration: none;
-  transition: color 0.18s ease;
+  font-size: 0.85rem; font-weight: 500; color: var(--ink-soft);
+  text-decoration: none; transition: color 0.18s ease;
 }
 .nav-links a:hover { color: var(--orange); }
 
-/* ---- Reusable buttons ---- */
+/* ---- Buttons ---- */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 22px;
-  border-radius: 999px;
-  font-family: inherit;
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 24px; border-radius: 999px;
+  font-family: inherit; font-size: 0.9rem; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: 1px solid transparent;
+  transition: all 0.2s ease; white-space: nowrap;
 }
 .btn-primary { background: var(--orange); color: #fff; }
 .btn-primary:hover { background: var(--rust); transform: translateY(-1px); box-shadow: var(--shadow-md); }
@@ -118,123 +129,138 @@ section {
 .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
 .nav-cta { padding: 10px 20px; font-size: 0.84rem; }
 
-/* ============ HERO (restructured, flattened) ============ */
+/* ============ HERO ============ */
 .hero {
   min-height: auto;
-  padding: 72px 7vw 96px;
-  background: linear-gradient(180deg, var(--cream-soft) 0%, var(--cream) 100%);
+  padding: 84px 7vw 104px;
+  background: radial-gradient(120% 90% at 85% 0%, rgba(245,133,36,0.10), transparent 55%), var(--cream-soft);
 }
 .hero-grid { gap: 64px; align-items: center; }
-
-.hero-copy .eyebrow { margin-bottom: 20px; }
+.hero-copy .eyebrow { margin-bottom: 22px; }
 .hero h1 {
-  font-size: clamp(2.3rem, 4.6vw, 3.7rem);
-  line-height: 1.06;
+  font-size: clamp(2.4rem, 4.8vw, 3.9rem);
+  line-height: 1.04;
   margin-bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
 }
-.hero h1 .rust-stack,
-.hero h1 .belive-logo-wrap { display: inline-flex; }
-.hero h1 .rust-stack .arabloc-wordmark { height: 64px; width: auto; max-width: 100%; object-fit: contain; }
+.hero h1 .rust-stack, .hero h1 .belive-logo-wrap { display: inline-flex; }
+.hero h1 .rust-stack .arabloc-wordmark { height: 66px; width: auto; max-width: 100%; object-fit: contain; }
 .hero h1 .belive-logo-wrap img { height: 54px; width: auto; }
-.hero h1 .hero-x {
-  display: inline-block;
-  font-size: 1.4rem;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--teal);
-}
-.hero-sub {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--ink-soft);
-  max-width: 480px;
-  margin: 24px 0 0;
-}
-
-/* Hero CTA buttons */
-.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
-
-/* Hero stat row — flatter, divided, minimal */
+.hero h1 .hero-x { font-size: 1.5rem; font-weight: 400; font-style: italic; color: var(--teal); }
+.hero-sub { font-size: 1.12rem; line-height: 1.7; color: var(--ink-soft); max-width: 480px; margin: 24px 0 0; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
 .hero-meta {
-  margin-top: 38px;
-  padding-top: 28px;
-  border-top: 1px solid var(--line);
-  gap: 38px;
+  margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); gap: 40px;
 }
-.hero-meta strong { font-size: 1.5rem; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.hero-meta strong { font-size: 1.55rem; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
 .hero-meta span { color: var(--muted); font-size: 0.8rem; }
-
-/* Hero visual — clean framed image, no heavy gradient */
 .hero-visual {
-  aspect-ratio: 4 / 5;
-  border-radius: 20px;
-  background: var(--cream);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4 / 5; border-radius: 22px; background: var(--cream);
+  border: 1px solid var(--line); box-shadow: var(--shadow-lg);
 }
 .hero-logo { object-fit: cover; }
 .hero-tag {
   top: 18px; left: 18px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--line-soft);
-  color: var(--ink);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  box-shadow: var(--shadow-sm);
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+  border: 1px solid var(--line-soft); color: var(--ink);
+  font-weight: 600; letter-spacing: 0.04em; box-shadow: var(--shadow-sm);
 }
 
-/* ============ Card softening (harmonize to minimal) ============ */
-.floorplan-card,
-.stat-card,
-.metric-tile,
-.cap,
-.brand-tile,
-.contact-card,
-.dev-card,
-.renox-pillar,
-.reno-showcase-cell,
-.cat-card,
-.proof-figure {
-  border-radius: 16px;
+/* ============ UNIFIED PREMIUM CARD SYSTEM ============ */
+.floorplan-card, .stat-card, .metric-tile, .cap, .brand-tile,
+.contact-card, .dev-card, .renox-pillar, .reno-showcase-cell,
+.proof-card, .cat-card {
+  background: var(--paper);
   border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.floorplan-card:hover, .stat-card:hover, .metric-tile:hover, .cap:hover,
+.brand-tile:hover, .contact-card:hover, .dev-card:hover, .renox-pillar:hover,
+.reno-showcase-cell:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(245, 133, 36, 0.35);
+}
+.dev-card { overflow: hidden; }
+.partner-logo-cell { border-radius: 12px; border: 1px solid var(--line-soft); background: var(--paper); }
+
+/* ============ WHY CHOOSE BELIVE ============ */
+.ecosystem-metrics { gap: 22px; }
+.metric-tile { padding: 28px 26px; }
+.metric-num { font-size: 2.7rem; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
+.metric-num span { color: var(--orange); }
+.metric-label { color: var(--ink-soft); }
+.metric-icon { color: var(--orange); }
+
+/* ============ DEVELOPMENTS ============ */
+.developments-footer {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
 }
-.floorplan-card:hover,
-.stat-card:hover,
-.metric-tile:hover,
-.cap:hover,
-.contact-card:hover,
-.dev-card:hover {
-  box-shadow: var(--shadow-md);
+.dev-card-more { background: var(--ink-deep); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.dev-card-more .dev-more-num { color: var(--orange); }
+
+/* ============ LOCATION / DEMAND ============ */
+.stat-card { padding: 30px 26px; }
+.stat-icon { color: var(--orange); }
+.stat-number { font-size: clamp(1.25rem, 2.4vw, 1.7rem); font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+.stat-label { color: var(--ink-soft); }
+.demand-callout {
+  background: var(--ink-deep);
+  border-radius: var(--radius);
+  color: rgba(255,255,255,0.82);
 }
-.floorplan-tag { color: var(--ink); }
+.demand-callout .pop { color: #fff; }
 
-/* Pillars / partner cells lighter */
-.partner-logo-cell { border-radius: 12px; border: 1px solid var(--line-soft); }
+/* ============ SCORING ============ */
+.score-row {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.score-bar-fill { background: linear-gradient(90deg, var(--orange), var(--rust)); }
+.score-badge { background: rgba(245,133,36,0.12); color: var(--rust); border: 1px solid rgba(245,133,36,0.3); }
 
-/* ============ CTA & contact polish ============ */
-.cta { padding: 116px 7vw; }
-.contact { background: var(--cream); }
-.whatsapp-card { box-shadow: var(--shadow-md); }
+/* ============ ECOSYSTEM STATEMENT → dark feature band ============ */
+.ecosystem-statement { background: var(--ink-deep); }
+.ecosystem-statement h2 { color: #fff; }
+.ecosystem-statement p { color: rgba(255,255,255,0.80); }
 
-/* ============ Footer ============ */
-footer { padding: 38px 7vw; }
+/* ============ PROOF ============ */
+.proof-figure { border-radius: var(--radius); box-shadow: var(--shadow-md); overflow: hidden; }
 
-/* ============ Responsive ============ */
+/* ============ CTA (keep bold, refine) ============ */
+.cta { padding: 124px 7vw; }
+.cta .aud {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
+}
+
+/* ============ CONTACT ============ */
+.contact-card { padding: 30px 24px; }
+.whatsapp-card { box-shadow: var(--shadow-md); border-radius: var(--radius); }
+.office { border-left: 3px solid var(--orange); padding-left: 16px; }
+
+/* ============ FOOTER ============ */
+footer { padding: 40px 7vw; }
+
+/* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
   .nav-links { display: none; }
 }
 @media (max-width: 768px) {
-  section { padding: 72px 6vw; }
-  .hero { padding: 48px 6vw 64px; }
-  .hero h1 .rust-stack .arabloc-wordmark { height: 48px; }
+  section { padding: 74px 6vw; }
+  .hero { padding: 52px 6vw 68px; }
+  .hero h1 .rust-stack .arabloc-wordmark { height: 50px; }
   .hero h1 .belive-logo-wrap img { height: 40px; }
-  .hero-meta { gap: 24px; flex-wrap: wrap; }
+  .hero-meta { gap: 22px; flex-wrap: wrap; }
   .nav-brand img { height: 26px; }
   .nav-brand .nav-belive { height: 19px; }
+  .metric-num { font-size: 2.2rem; }
 }
