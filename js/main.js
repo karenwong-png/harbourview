@@ -86,9 +86,17 @@
     { name: "Sunway Medical Centre Penang", category: "healthcare", type: "Private Hospital", coords: [5.3987, 100.4009], note: "Private medical centre at Seberang Jaya." },
     { name: "KPJ Penang Specialist", category: "healthcare", type: "Private Hospital", coords: [5.3690, 100.4343], note: "KPJ specialist hospital at Bandar Perda." },
 
-    // Hotel (3–5 star)
-    { name: "Sunway Hotel Seberang Jaya", category: "hotel", type: "4-Star Hotel", coords: [5.3956, 100.3981], note: "4-star hotel adjoining Sunway Carnival Mall." },
-    { name: "The Light Hotel", category: "hotel", type: "4-Star Hotel", coords: [5.3944, 100.3986], note: "Hotel within the Seberang Jaya commercial cluster." },
+    // Nearby Condos (rental comparables — room-type pricing in popup)
+    { name: "Luminari", category: "condo", type: "Serviced Suites", coords: [5.3970, 100.3729], note: "Waterfront serviced suites within Harbour Place.",
+      rates: [["Master Room", "RM 850 – 1,100"], ["Single / Queen", "RM 600 – 850"], ["Balcony Room", "RM 550 – 750"]] },
+    { name: "Ocean View Residences", category: "condo", type: "Condominium", coords: [5.3950, 100.3724], note: "Sea-fronting condominium near Harbour Place.",
+      rates: [["Master Room", "RM 850 – 1,100"], ["Single / Queen", "RM 600 – 850"], ["Balcony Room", "RM 550 – 750"]] },
+    { name: "Woodsbury Suites", category: "condo", type: "Serviced Suites", coords: [5.3992, 100.3756], note: "Established Bagan Ajam serviced suites with strong rental demand.",
+      rates: [["Master Room", "RM 900 – 1,200"], ["Single / Queen", "RM 650 – 900"], ["Balcony Room", "RM 600 – 800"]] },
+    { name: "Sea View Tower", category: "condo", type: "Apartment", coords: [5.3952, 100.3715], note: "Waterfront apartment block near the ferry terminal.",
+      rates: [["Master Room", "RM 800 – 1,050"], ["Single / Queen", "RM 580 – 820"], ["Balcony Room", "RM 520 – 720"]] },
+    { name: "Wellesley Residences", category: "condo", type: "Serviced Residence", coords: [5.3970, 100.3725], note: "Integrated serviced residence within Harbour Place.",
+      rates: [["Master Room", "RM 900 – 1,150"], ["Single / Queen", "RM 650 – 900"], ["Balcony Room", "RM 600 – 780"]] },
 
     // Accessibility (transport hub + highways)
     { name: "Penang Sentral", category: "transport", type: "Integrated Transport Hub", coords: [5.3955, 100.3651], note: "KTM/ETS, ferry & bus hub; planned LRT Mutiara Line terminus." },
