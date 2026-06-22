@@ -317,49 +317,51 @@
   // ============ ROI Calculator ============
   const ROI_DATA = {
     A: {
-      label: "Type A · ~950 sq ft · 3R2B",
-      spec: "~950 sq ft · 3R2B",
+      label: "Type A · 950 sq ft · 3R2B",
+      spec: "950 sq ft · 3R2B",
       floorplan: "/HBV_FloorplanA.png",
       defaultPrice: 350000,
       wholeLo: 1500, wholeHi: 1800,
       rooms: [
         { id: "r2", name: "Room 2 (Queen Room)",          lo: 600, hi: 750 },
-        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 750, hi: 950 }
+        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 750, hi: 950 },
+        { id: "r4", name: "Room 4 (Queen Room)",          lo: 600, hi: 750 }
       ],
       extras: [
-        { id: "balcony", name: "Room 1 (Queen Room)", lo: 500, hi: 650 },
-        { id: "parking", name: "Parking Bay",         lo: 150, hi: 150 }
+        { id: "balcony", name: "Room 1 (Queen Room · Optimized)", lo: 500, hi: 650 },
+        { id: "parking", name: "Parking Bay",                     lo: 150, hi: 150 }
       ]
     },
     A1: {
-      label: "Type A1 · ~1,050 sq ft · 3R2B",
-      spec: "~1,050 sq ft · 3R2B",
+      label: "Type A1 · 1,126 sq ft · 3R2B",
+      spec: "1,126 sq ft · 3R2B",
       floorplan: "/HBV_FloorplanA1.png",
       defaultPrice: 430000,
       wholeLo: 1700, wholeHi: 2000,
       rooms: [
         { id: "r2", name: "Room 2 (Queen Room)",          lo: 600, hi: 780 },
-        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 780, hi: 980 }
+        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 780, hi: 980 },
+        { id: "r4", name: "Room 4 (Queen Room)",          lo: 600, hi: 780 }
       ],
       extras: [
-        { id: "balcony", name: "Room 1 (Queen Room)", lo: 520, hi: 680 },
-        { id: "parking", name: "Parking Bay",         lo: 150, hi: 150 }
+        { id: "balcony", name: "Room 1 (Queen Room · Optimized)", lo: 520, hi: 680 },
+        { id: "parking", name: "Parking Bay",                     lo: 150, hi: 150 }
       ]
     },
     B: {
-      label: "Type B · ~1,200 sq ft · 3+1R",
-      spec: "~1,200 sq ft · 3+1R",
+      label: "Type B · 950 sq ft · 3B2R",
+      spec: "950 sq ft · 3B2R",
       floorplan: "/HBV_FloorplanB.png",
       defaultPrice: 520000,
       wholeLo: 1900, wholeHi: 2300,
       rooms: [
         { id: "r2", name: "Room 2 (Queen Room)",          lo: 620, hi:  800 },
-        { id: "r3", name: "Room 3 (Queen Room)",          lo: 620, hi:  800 },
-        { id: "r4", name: "Room 4 (Queen Room · Master)", lo: 800, hi: 1000 }
+        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 800, hi: 1000 },
+        { id: "r4", name: "Room 4 (Queen Room)",          lo: 620, hi:  800 }
       ],
       extras: [
-        { id: "balcony", name: "Room 1 (Queen Room)", lo: 520, hi: 700 },
-        { id: "parking", name: "Parking Bay",         lo: 150, hi: 150 }
+        { id: "balcony", name: "Room 1 (Queen Room · Optimized)", lo: 520, hi: 700 },
+        { id: "parking", name: "Parking Bay",                     lo: 150, hi: 150 }
       ]
     }
   };
@@ -387,9 +389,9 @@
           '<div class="arb-panel-title">Your Unit</div>' +
           '<div class="arb-panel-sub">Configure the asset you’re modelling.</div>' +
           '<div class="arb-seg arb-seg-3" id="arb-seg">' +
-            '<button id="arb-btn-a" class="on">Type A<small>~950 sq ft · 3R2B</small></button>' +
-            '<button id="arb-btn-a1">Type A1<small>~1,050 sq ft · 3R2B</small></button>' +
-            '<button id="arb-btn-b">Type B<small>~1,200 sq ft · 3+1R</small></button>' +
+            '<button id="arb-btn-a" class="on">Type A<small>950 sq ft · 3R2B</small></button>' +
+            '<button id="arb-btn-a1">Type A1<small>1,126 sq ft · 3R2B</small></button>' +
+            '<button id="arb-btn-b">Type B<small>950 sq ft · 3B2R</small></button>' +
           '</div>' +
           '<div class="arb-floorplan"><img id="arb-floorplan-img" src="" alt="Harbour View floor plan" /></div>' +
           '<div class="arb-field">' +
