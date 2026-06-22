@@ -168,7 +168,7 @@ section {
 
 /* ============ UNIFIED PREMIUM CARD SYSTEM ============ */
 .floorplan-card, .stat-card, .metric-tile, .cap, .brand-tile,
-.contact-card, .dev-card, .renox-pillar, .reno-showcase-cell,
+.contact-card, .dev-card, .renox-pillar,
 .proof-card, .cat-card {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -177,8 +177,7 @@ section {
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .floorplan-card:hover, .stat-card:hover, .metric-tile:hover, .cap:hover,
-.brand-tile:hover, .contact-card:hover, .dev-card:hover, .renox-pillar:hover,
-.reno-showcase-cell:hover {
+.brand-tile:hover, .contact-card:hover, .dev-card:hover, .renox-pillar:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
   border-color: rgba(245, 133, 36, 0.35);
