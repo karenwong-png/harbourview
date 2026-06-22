@@ -85,7 +85,7 @@ section {
   font-size: 1.08rem;
   line-height: 1.75;
   color: var(--ink-soft);
-  max-width: 720px;
+  max-width: none;
   margin-bottom: 56px;
 }
 
