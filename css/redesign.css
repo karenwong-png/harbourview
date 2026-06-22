@@ -1,0 +1,240 @@
+/* ============================================================
+   Harbour View × BeLive — Modern Minimal Redesign Layer
+   Loaded AFTER styles.css to re-skin the page with a cleaner,
+   lighter, more spacious design while keeping the warm brand.
+   ============================================================ */
+
+/* ---- Refined token palette (warm but cleaner) ---- */
+:root {
+  --cream: #f9f4ec;
+  --cream-soft: #fffdfa;
+  --paper: #ffffff;
+  --ink: #1b242a;
+  --ink-soft: #56636c;
+  --muted: #95a0a8;
+  --line: rgba(27, 36, 42, 0.10);
+  --line-soft: rgba(27, 36, 42, 0.06);
+  --shadow-sm: 0 1px 3px rgba(27, 36, 42, 0.05);
+  --shadow-md: 0 10px 30px rgba(27, 36, 42, 0.07);
+  --shadow-lg: 0 28px 60px rgba(27, 36, 42, 0.10);
+  --nav-h: 66px;
+}
+
+/* ---- Base ---- */
+body {
+  background: var(--cream-soft);
+  color: var(--ink);
+  font-weight: 400;
+  letter-spacing: 0.002em;
+  padding-top: var(--nav-h);
+}
+
+/* Modern minimal = no blurry decorative blobs */
+.blob { display: none !important; }
+
+h1, h2, h3, .display { letter-spacing: -0.028em; font-weight: 700; }
+
+/* ---- Section rhythm: more whitespace, hairline separators ---- */
+section {
+  padding: 104px 7vw;
+  scroll-margin-top: calc(var(--nav-h) + 10px);
+}
+.container { max-width: 1180px; }
+
+/* ---- Eyebrow: smaller, brand-accent, refined ---- */
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+  margin-bottom: 16px;
+}
+.eyebrow::before { width: 20px; height: 1.5px; background: var(--orange); }
+
+/* ---- Section titles & leads ---- */
+.section-title {
+  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+}
+.section-lead {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  max-width: 720px;
+  margin-bottom: 54px;
+}
+
+/* ============ STICKY NAV ============ */
+.site-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7vw;
+  background: rgba(255, 253, 250, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line-soft);
+}
+.nav-brand { display: inline-flex; align-items: center; gap: 12px; }
+.nav-brand img { height: 30px; width: auto; display: block; }
+.nav-brand .nav-x { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+.nav-brand .nav-belive { height: 22px; }
+.nav-links { display: flex; align-items: center; gap: 30px; }
+.nav-links a {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+.nav-links a:hover { color: var(--orange); }
+
+/* ---- Reusable buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--orange); color: #fff; }
+.btn-primary:hover { background: var(--rust); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+.nav-cta { padding: 10px 20px; font-size: 0.84rem; }
+
+/* ============ HERO (restructured, flattened) ============ */
+.hero {
+  min-height: auto;
+  padding: 72px 7vw 96px;
+  background: linear-gradient(180deg, var(--cream-soft) 0%, var(--cream) 100%);
+}
+.hero-grid { gap: 64px; align-items: center; }
+
+.hero-copy .eyebrow { margin-bottom: 20px; }
+.hero h1 {
+  font-size: clamp(2.3rem, 4.6vw, 3.7rem);
+  line-height: 1.06;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.hero h1 .rust-stack,
+.hero h1 .belive-logo-wrap { display: inline-flex; }
+.hero h1 .rust-stack .arabloc-wordmark { height: 64px; width: auto; max-width: 100%; object-fit: contain; }
+.hero h1 .belive-logo-wrap img { height: 54px; width: auto; }
+.hero h1 .hero-x {
+  display: inline-block;
+  font-size: 1.4rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--teal);
+}
+.hero-sub {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 480px;
+  margin: 24px 0 0;
+}
+
+/* Hero CTA buttons */
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+
+/* Hero stat row — flatter, divided, minimal */
+.hero-meta {
+  margin-top: 38px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  gap: 38px;
+}
+.hero-meta strong { font-size: 1.5rem; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.hero-meta span { color: var(--muted); font-size: 0.8rem; }
+
+/* Hero visual — clean framed image, no heavy gradient */
+.hero-visual {
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+}
+.hero-logo { object-fit: cover; }
+.hero-tag {
+  top: 18px; left: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--line-soft);
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============ Card softening (harmonize to minimal) ============ */
+.floorplan-card,
+.stat-card,
+.metric-tile,
+.cap,
+.brand-tile,
+.contact-card,
+.dev-card,
+.renox-pillar,
+.reno-showcase-cell,
+.cat-card,
+.proof-figure {
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.floorplan-card:hover,
+.stat-card:hover,
+.metric-tile:hover,
+.cap:hover,
+.contact-card:hover,
+.dev-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.floorplan-tag { color: var(--ink); }
+
+/* Pillars / partner cells lighter */
+.partner-logo-cell { border-radius: 12px; border: 1px solid var(--line-soft); }
+
+/* ============ CTA & contact polish ============ */
+.cta { padding: 116px 7vw; }
+.contact { background: var(--cream); }
+.whatsapp-card { box-shadow: var(--shadow-md); }
+
+/* ============ Footer ============ */
+footer { padding: 38px 7vw; }
+
+/* ============ Responsive ============ */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+}
+@media (max-width: 768px) {
+  section { padding: 72px 6vw; }
+  .hero { padding: 48px 6vw 64px; }
+  .hero h1 .rust-stack .arabloc-wordmark { height: 48px; }
+  .hero h1 .belive-logo-wrap img { height: 40px; }
+  .hero-meta { gap: 24px; flex-wrap: wrap; }
+  .nav-brand img { height: 26px; }
+  .nav-brand .nav-belive { height: 19px; }
+}
