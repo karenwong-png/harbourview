@@ -320,65 +320,49 @@
   // ============ ROI Calculator ============
   const ROI_DATA = {
     A: {
-      label: "Type A · 767 sq ft · 2R2B",
-      spec: "767 sq ft · 2R2B",
-      floorplan: "/Ara_Bloc_TypeA.jpg",
-      defaultPrice: 600000,
-      wholeLo: 2200, wholeHi: 2500,
+      label: "Type A · ~950 sq ft · 3R2B",
+      spec: "~950 sq ft · 3R2B",
+      floorplan: "/HBV_FloorplanA.png",
+      defaultPrice: 350000,
+      wholeLo: 1500, wholeHi: 1800,
       rooms: [
-        { id: "r2", name: "Room 2 (Queen Room)",          lo:  900, hi: 1400 },
-        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 1400, hi: 1800 }
+        { id: "r2", name: "Room 2 (Queen Room)",          lo: 600, hi: 750 },
+        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 750, hi: 950 }
       ],
       extras: [
-        { id: "balcony", name: "Room 1 (Queen Room · Balcony)", lo: 850, hi: 1100 },
-        { id: "parking", name: "Parking Bay",                   lo: 200, hi:  200 }
+        { id: "balcony", name: "Room 1 (Queen Room)", lo: 500, hi: 650 },
+        { id: "parking", name: "Parking Bay",         lo: 150, hi: 150 }
+      ]
+    },
+    A1: {
+      label: "Type A1 · ~1,050 sq ft · 3R2B",
+      spec: "~1,050 sq ft · 3R2B",
+      floorplan: "/HBV_FloorplanA1.png",
+      defaultPrice: 430000,
+      wholeLo: 1700, wholeHi: 2000,
+      rooms: [
+        { id: "r2", name: "Room 2 (Queen Room)",          lo: 600, hi: 780 },
+        { id: "r3", name: "Room 3 (Queen Room · Master)", lo: 780, hi: 980 }
+      ],
+      extras: [
+        { id: "balcony", name: "Room 1 (Queen Room)", lo: 520, hi: 680 },
+        { id: "parking", name: "Parking Bay",         lo: 150, hi: 150 }
       ]
     },
     B: {
-      label: "Type B · 961 sq ft · 3R2B",
-      spec: "961 sq ft · 3R2B",
-      floorplan: "/Ara_Bloc_TypeB.jpg",
-      defaultPrice: 760000,
-      wholeLo: 2900, wholeHi: 3300,
+      label: "Type B · ~1,200 sq ft · 3+1R",
+      spec: "~1,200 sq ft · 3+1R",
+      floorplan: "/HBV_FloorplanB.png",
+      defaultPrice: 520000,
+      wholeLo: 1900, wholeHi: 2300,
       rooms: [
-        { id: "r2", name: "Room 2 (Queen Room)",          lo:  900, hi: 1400 },
-        { id: "r3", name: "Room 3 (Queen Room)",          lo:  900, hi: 1400 },
-        { id: "r4", name: "Room 4 (Queen Room · Master)", lo: 1400, hi: 1800 }
+        { id: "r2", name: "Room 2 (Queen Room)",          lo: 620, hi:  800 },
+        { id: "r3", name: "Room 3 (Queen Room)",          lo: 620, hi:  800 },
+        { id: "r4", name: "Room 4 (Queen Room · Master)", lo: 800, hi: 1000 }
       ],
       extras: [
-        { id: "balcony", name: "Room 1 (Queen Room · Balcony)", lo: 850, hi: 1100 },
-        { id: "parking", name: "Parking Bay",                   lo: 200, hi:  200 }
-      ]
-    },
-    C: {
-      label: "Type C · 1,238 sq ft · 3+1R",
-      spec: "1,238 sq ft · 3+1R",
-      floorplan: "/Ara_Bloc_TypeC.jpg",
-      defaultPrice: 970000,
-      wholeLo: 3500, wholeHi: 4000,
-      rooms: [
-        { id: "r2", name: "Room 2 (Queen Room)",          lo:  900, hi: 1400 },
-        { id: "r3", name: "Room 3 (Queen Room)",          lo:  900, hi: 1400 },
-        { id: "r4", name: "Room 4 (Queen Room · Master)", lo: 1400, hi: 1800 }
-      ],
-      extras: [
-        { id: "balcony", name: "Room 1 (Queen Room · Balcony)", lo: 850, hi: 1100 },
-        { id: "parking", name: "Parking Bay",                   lo: 200, hi:  200 }
-      ]
-    },
-    D: {
-      label: "Type D · 550 sq ft · 2R1B",
-      spec: "550 sq ft · 2R1B",
-      floorplan: "/Ara_Bloc_TypeD.jpg",
-      defaultPrice: 450000,
-      wholeLo: 1700, wholeHi: 2000,
-      rooms: [
-        { id: "r1", name: "Room 1 (Queen Room)", lo: 900, hi: 1400 },
-        { id: "r2", name: "Room 2 (Queen Room)", lo: 900, hi: 1400 }
-      ],
-      extras: [
-        { id: "balcony", name: "Room 3 (Queen Room)", lo: 900, hi: 1400 },
-        { id: "parking", name: "Parking Bay",         lo: 200, hi:  200 }
+        { id: "balcony", name: "Room 1 (Queen Room)", lo: 520, hi: 700 },
+        { id: "parking", name: "Parking Bay",         lo: 150, hi: 150 }
       ]
     }
   };
@@ -388,7 +372,7 @@
     const root = document.getElementById('roi-calculator');
     if (!root) return;
 
-    const WA = 'https://bit.ly/arabloc_web';
+    const WA = 'https://wa.link/yxfq39';
     let type = 'A';
     let price = ROI_DATA.A.defaultPrice;
     let occ = 100;
@@ -398,24 +382,23 @@
     root.innerHTML =
       '<div class="arb-head">' +
         '<span class="arb-eyebrow"><span class="arb-dot"></span>Smart Renovation · Rental Projection & Live ROI</span>' +
-        '<h2 class="arb-h1">Model your <em>ARA BLOC</em> returns in real time.</h2>' +
-        '<p class="arb-lede">Pick a floor plan, adjust your purchase price and occupancy, then choose how you want to let the unit. Annual income and ROI recalculate instantly — based on BeLive’s optimized co-living rental data for ARA BLOC.</p>' +
+        '<h2 class="arb-h1">Model your <em>Harbour View</em> returns in real time.</h2>' +
+        '<p class="arb-lede">Pick a floor plan, adjust your purchase price and occupancy, then choose how you want to let the unit. Annual income and ROI recalculate instantly — based on BeLive’s optimized co-living rental data for Harbour View.</p>' +
       '</div>' +
       '<div class="arb-grid">' +
         '<div class="arb-panel">' +
           '<div class="arb-panel-title">Your Unit</div>' +
           '<div class="arb-panel-sub">Configure the asset you’re modelling.</div>' +
-          '<div class="arb-seg arb-seg-4" id="arb-seg">' +
-            '<button id="arb-btn-a" class="on">Type A<small>767 sq ft · 2R2B</small></button>' +
-            '<button id="arb-btn-b">Type B<small>961 sq ft · 3R2B</small></button>' +
-            '<button id="arb-btn-c">Type C<small>1,238 sq ft · 3+1R</small></button>' +
-            '<button id="arb-btn-d">Type D<small>550 sq ft · 2R1B</small></button>' +
+          '<div class="arb-seg arb-seg-3" id="arb-seg">' +
+            '<button id="arb-btn-a" class="on">Type A<small>~950 sq ft · 3R2B</small></button>' +
+            '<button id="arb-btn-a1">Type A1<small>~1,050 sq ft · 3R2B</small></button>' +
+            '<button id="arb-btn-b">Type B<small>~1,200 sq ft · 3+1R</small></button>' +
           '</div>' +
-          '<div class="arb-floorplan"><img id="arb-floorplan-img" src="" alt="ARA BLOC floor plan" /></div>' +
+          '<div class="arb-floorplan"><img id="arb-floorplan-img" src="" alt="Harbour View floor plan" /></div>' +
           '<div class="arb-field">' +
             '<div class="arb-field-row"><label>SPA Purchase Price</label><span class="arb-val" id="arb-price-val">RM 0</span></div>' +
-            '<input type="range" id="arb-price-range" min="400000" max="1200000" step="5000" />' +
-            '<div class="arb-field-row arb-ticks"><span class="arb-hint">RM 400k</span><span class="arb-hint" id="arb-spahint">Est. SPA</span><span class="arb-hint">RM 1.2m</span></div>' +
+            '<input type="range" id="arb-price-range" min="200000" max="650000" step="5000" />' +
+            '<div class="arb-field-row arb-ticks"><span class="arb-hint">RM 200k</span><span class="arb-hint" id="arb-spahint">Est. SPA</span><span class="arb-hint">RM 650k</span></div>' +
           '</div>' +
           '<div class="arb-field">' +
             '<div class="arb-field-row"><label>Average Occupancy</label><span class="arb-val" id="arb-occ-val">0%</span></div>' +
@@ -432,7 +415,7 @@
           '</div>' +
         '</div>' +
         '<div class="arb-panel arb-result">' +
-          '<div class="arb-lockup"><img src="/beLive_Logo_F_fit.png" alt="BeLive" /><span>×</span><img src="/arabloc_logo1.png" alt="ARA BLOC" /></div>' +
+          '<div class="arb-lockup"><img src="/beLive_Logo_F_fit.png" alt="BeLive" /><span>×</span><img src="/hblogo_brown.png" alt="Harbour View" /></div>' +
           '<div class="arb-rc-label">Estimated Monthly Income</div>' +
           '<div class="arb-rc-hero"><span class="arb-unit">RM</span><span class="arb-num" id="arb-monthly">0</span><span class="arb-per">/ mo</span></div>' +
           '<div class="arb-rc-sub"><span class="arb-rc-range" id="arb-monthly-range">RM 0 – RM 0</span><span class="arb-rc-meta">≈ RM <span id="arb-annual">0</span>/yr · <span id="arb-occmode"></span></span></div>' +
@@ -459,7 +442,7 @@
           '<a class="arb-cta" href="' + WA + '" target="_blank" rel="noopener noreferrer">Get my free unit assessment' +
             '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>' +
           '</a>' +
-          '<p class="arb-disclaimer">Indicative figures based on BeLive co-living rental data for ARA BLOC. Excludes maintenance fees, electrical appliances &amp; air-conditioning. Partition installation is at the owner’s discretion. For reference only — not financial advice.</p>' +
+          '<p class="arb-disclaimer">Indicative figures based on BeLive co-living rental data for Harbour View. Excludes maintenance fees, electrical appliances &amp; air-conditioning. Partition installation is at the owner’s discretion. For reference only — not financial advice.</p>' +
         '</div>' +
       '</div>';
 
@@ -489,7 +472,7 @@
     function renderFloorplan() {
       const img = el('#arb-floorplan-img');
       img.src = ROI_DATA[type].floorplan;
-      img.alt = 'ARA BLOC ' + ROI_DATA[type].label + ' floor plan';
+      img.alt = 'Harbour View ' + ROI_DATA[type].label + ' floor plan';
     }
 
     function modeLabel() {
@@ -546,7 +529,7 @@
 
       el('#arb-price-val').textContent = 'RM ' + roiFmt(price);
       el('#arb-occ-val').textContent = occ + '%';
-      priceRange.style.setProperty('--p', ((price - 400000) / (1200000 - 400000) * 100) + '%');
+      priceRange.style.setProperty('--p', ((price - 200000) / (650000 - 200000) * 100) + '%');
       occRange.style.setProperty('--p', ((occ - 80) / (100 - 80) * 100) + '%');
       el('#arb-spahint').textContent = 'Est. SPA for Type ' + type;
       el('#arb-occmode').textContent = occ + '% occupancy · ' + modeLabel();
@@ -555,7 +538,7 @@
         lines.map((l) => '<div class="arb-brow"><span class="arb-bn">' + l.name + '</span><span class="arb-bv">' + fmtRange(l.lo, l.hi) + '</span></div>').join('') +
         '<div class="arb-brow tot"><span class="arb-bn">Monthly total (gross)</span><span class="arb-bv">' + fmtRange(mRange.lo, mRange.hi) + '</span></div>';
 
-      const gradeA = roiMid >= 5.8;
+      const gradeA = roiMid >= 6.0;
       const tag = el('#arb-grade-tag');
       tag.textContent = gradeA ? 'Grade A' : 'Grade B';
       tag.className = 'arb-tag ' + (gradeA ? 'a' : 'b');
@@ -600,7 +583,7 @@
     function switchType(t) {
       type = t;
       price = ROI_DATA[t].defaultPrice;
-      ['A', 'B', 'C', 'D'].forEach((k) => {
+      ['A', 'A1', 'B'].forEach((k) => {
         const btn = el('#arb-btn-' + k.toLowerCase());
         if (btn) btn.className = (k === t ? 'on' : '');
       });
@@ -617,7 +600,7 @@
       update();
     }
 
-    ['A', 'B', 'C', 'D'].forEach((k) => {
+    ['A', 'A1', 'B'].forEach((k) => {
       const btn = el('#arb-btn-' + k.toLowerCase());
       if (btn) btn.addEventListener('click', () => switchType(k));
     });
