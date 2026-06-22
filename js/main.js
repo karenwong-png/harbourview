@@ -277,7 +277,7 @@
     function applyFilter() {
       const allOn = showAll && showAll.checked;
       const activeCard = document.querySelector('.cat-card.active');
-      const activeCat = activeCard ? activeCard.dataset.cat : 'education';
+      const activeCat = activeCard ? activeCard.dataset.cat : 'condo';
 
       Object.keys(layersByCat).forEach((c) => {
         const layer = layersByCat[c];
