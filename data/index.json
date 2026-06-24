@@ -1,0 +1,6 @@
+{
+  "_note": "Registry of published condos. The publish tool appends an entry here when a new condo goes live.",
+  "condos": [
+    { "slug": "harbour-view", "name": "Harbour View Residence", "area": "Butterworth, Penang", "published": "2026-06-23" }
+  ]
+}
