@@ -169,6 +169,16 @@
     background:#fff; border:1px dashed var(--orange); border-radius:99px; transition:.18s var(--ease); }
   .add-type:hover{ background:var(--yellow); }
   .urow .u-name{ font-weight:600; }
+
+  /* Advanced collapsible (raw data editor) */
+  .adv{ border:1px solid var(--line-strong); border-radius:14px; background:#FBFBFC; padding:0 16px; margin-bottom:4px; }
+  .adv summary{ cursor:pointer; list-style:none; padding:14px 0; font-size:.85rem; font-weight:600; color:var(--ink-soft);
+    display:flex; align-items:center; gap:8px; user-select:none; }
+  .adv summary::-webkit-details-marker{ display:none; }
+  .adv summary::before{ content:"›"; font-size:1.1rem; color:var(--mut); transition:transform .2s var(--ease); display:inline-block; }
+  .adv[open] summary::before{ transform:rotate(90deg); }
+  .adv[open]{ padding-bottom:16px; }
+  .adv textarea{ margin-top:2px; }
   @media (max-width:640px){
     .units-head{ display:none; }
     .urow{ grid-template-columns:1fr; gap:12px; padding:14px; border:1px solid var(--line); border-radius:14px; margin-bottom:10px; background:#fff; }
@@ -373,13 +383,19 @@
 
   <!-- STEP 3 -->
   <div class="card hidden" id="reviewCard">
-    <div class="step"><span class="n">3</span><span class="txt">Review &amp; publish</span> <span class="pill" id="chosenLabel">Owner</span></div>
-    <p class="muted" style="margin:-6px 0 18px">Page will publish at <code id="slugPreview"></code>. Eyeball the numbers, edit the file if needed, then publish.</p>
+    <div class="step"><span class="n">3</span><span class="txt">Check it &amp; publish</span> <span class="pill" id="chosenLabel">Owner</span></div>
+    <p class="muted" style="margin:-6px 0 18px">Here's what the page will show. Have a quick look — if the numbers look right, hit publish. Nothing goes public until you approve it on the next screen.</p>
     <div class="summary" id="summary"></div>
-    <label>condo-data.js (editable)</label>
-    <textarea id="condoData" spellcheck="false"></textarea>
+    <p class="hint" style="margin:2px 0 16px">Your new page will live at <code id="slugPreview"></code></p>
+
+    <details class="adv">
+      <summary>Advanced: edit the raw page data <span class="opt">— optional, for tech-savvy users</span></summary>
+      <p class="help" style="margin:10px 0 8px">This is the exact data file for the page. Only change it if you know what you're doing — a wrong edit can break the page. Most people can skip this.</p>
+      <textarea id="condoData" spellcheck="false"></textarea>
+    </details>
+
     <div class="actions">
-      <button class="btn" id="pubBtn">Publish page to preview</button>
+      <button class="btn" id="pubBtn">Looks good — publish</button>
       <button class="btn ghost" id="reChoose" type="button">← Change template</button>
       <span id="pubState" class="muted"></span>
     </div>
@@ -641,8 +657,9 @@ function renderSummary(js){
     const park=(d.extras||[]).filter(e=>e.id==='parking').reduce((a,r)=>[a[0]+(r.lo||0),a[1]+(r.hi||0)],[0,0]);
     const part=(d.extras||[]).filter(e=>e.id!=='parking').reduce((a,r)=>[a[0]+(r.lo||0),a[1]+(r.hi||0)],[0,0]);
     const opt=[rooms[0]+park[0]+part[0], rooms[1]+park[1]+part[1]];
-    roi+=`<div class="stat"><b>RM ${opt[0]}–${opt[1]}</b><span>${k} Optimized / mo</span></div>`; }
-  box.innerHTML = `<div class="stat"><b>${c.name||'—'} <span style="color:var(--orange-deep)">(${c.template||'owner'})</span></b><span>condo · template</span></div>` + chips + roi;
+    roi+=`<div class="stat"><b>RM ${opt[0]}–${opt[1]}</b><span>Type ${k} income / mo</span></div>`; }
+  const who = (c.template==='developer') ? 'Page for developers' : 'Page for owners';
+  box.innerHTML = `<div class="stat"><b>${c.name||'—'}</b><span>${who}</span></div>` + chips + roi;
 }
 $('condoData').addEventListener('input', e=>renderSummary(e.target.value));
 
