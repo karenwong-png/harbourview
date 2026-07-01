@@ -6,6 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="/vendor/pdfjs/pdf.min.js"></script>
 <style>
   :root{
     /* BeLive brand palette */
@@ -348,7 +349,7 @@
       <input id="floorplans" type="file" accept="image/*" multiple />
       <p class="help">Photos or screenshots of the floor plans. You can pick more than one — hold <b>Ctrl</b> (or <b>⌘</b> on Mac) while choosing.</p>
     </div>
-    <p class="hint">Tip: don't worry about photo size — we shrink the floor-plan images for you automatically. When you click the button, it reads the plans and checks live prices nearby — this takes about 30–90 seconds, so give it a moment.</p>
+    <p class="hint">Tip: don't worry about file size — we shrink the floor-plan images and the PDF brochure for you automatically. When you click the button, it reads the plans and checks live prices nearby — this takes about 30–90 seconds, so give it a moment.</p>
     <div class="actions"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
   </div>
 
@@ -445,6 +446,31 @@ function compressImage(file, maxDim=1600, quality=0.82){
   });
 }
 
+// Rasterise a PDF brochure into downscaled page images in the browser, so a
+// big PDF doesn't blow past the server's upload limit. Returns [{mediaType,data}].
+const MAX_PDF_PAGES = 12;
+async function pdfToImages(file, maxDim=1600, quality=0.7){
+  const lib = window.pdfjsLib;
+  if(!lib) return null;                         // library failed to load → caller falls back
+  lib.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.js';
+  const buf = await file.arrayBuffer();
+  const pdf = await lib.getDocument({ data:buf }).promise;
+  const pages = Math.min(pdf.numPages, MAX_PDF_PAGES);
+  const out = [];
+  for(let i=1; i<=pages; i++){
+    const page = await pdf.getPage(i);
+    const base = page.getViewport({ scale:1 });
+    const scale = Math.min(2, maxDim/Math.max(base.width, base.height));
+    const vp = page.getViewport({ scale });
+    const c = document.createElement('canvas'); c.width=Math.ceil(vp.width); c.height=Math.ceil(vp.height);
+    const ctx = c.getContext('2d');
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+    await page.render({ canvasContext:ctx, viewport:vp }).promise;
+    out.push({ mediaType:'image/jpeg', data:c.toDataURL('image/jpeg', quality).split(',')[1] });
+  }
+  return { images:out, total:pdf.numPages, used:pages };
+}
+
 // Read a fetch response as JSON, but degrade gracefully when the server
 // returns plain text/HTML (e.g. a 413 "Request Entity Too Large").
 async function readJson(r){
@@ -529,18 +555,37 @@ async function generate(){
     const fp = [];
     for(const f of $('floorplans').files){ fp.push(await compressImage(f)); }
     const body = { name:$('name').value, area:$('area').value, prices:buildPrices(), parking:buildParking(), floorplans:fp };
-    if($('infopack').files[0]) body.infopackBase64 = await fileToB64($('infopack').files[0]);
+    let note = '';
+    const pdf = $('infopack').files[0];
+    if(pdf){
+      $('genState').innerHTML='<span class="spin">Reading the brochure…</span>';
+      let done = false;
+      try{
+        const res = await pdfToImages(pdf);
+        if(res && res.images.length){
+          body.infopackImages = res.images; done = true;
+          if(res.total > res.used) note = ' (Used the first '+res.used+' of '+res.total+' brochure pages.)';
+        }
+      }catch(err){ /* fall back to raw PDF below */ }
+      if(!done){
+        // pdf.js unavailable or failed — send the raw PDF only if it's small enough.
+        const b64 = await fileToB64(pdf);
+        if(b64.length > 3_500_000)
+          throw new Error("That PDF is too large to read in the browser. Please attach a smaller PDF (or skip it), then try again.");
+        body.infopackBase64 = b64;
+      }
+    }
     const payload = JSON.stringify(body);
     // Vercel caps the request body at ~4.5 MB; keep a safety margin.
     if(payload.length > 4_200_000)
-      throw new Error('Your files are still too big to upload (about '+Math.round(payload.length/1048576)+' MB). Please remove the PDF or use fewer / smaller floor-plan images, then try again.');
+      throw new Error('Your files are still too big to upload (about '+Math.round(payload.length/1048576)+' MB). Please use fewer / smaller floor-plan images (and a shorter PDF), then try again.');
     $('genState').innerHTML='<span class="spin">Reading plans & pulling live comps… (up to ~90s)</span>';
     const r = await fetch('/api/generate',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()}, body:payload });
     const data = await readJson(r);
     if(!r.ok) throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Generate failed');
     BASE = parseCondo(data.condoData); BASE_SLUG = data.slug;
     if(!BASE) throw new Error('Generated data could not be parsed.');
-    $('genState').innerHTML='<span class="ok">Done — now choose a template.</span>';
+    $('genState').innerHTML='<span class="ok">Done — now choose a template.'+note+'</span>';
     $('choiceCard').classList.remove('hidden'); $('choiceCard').classList.add('reveal');
     $('reviewCard').classList.add('hidden');
     $('choiceCard').scrollIntoView({behavior:'smooth'});
