@@ -138,6 +138,14 @@
   .muted{ color:var(--mut); font-size:.82rem; line-height:1.5; }
   .hint{ color:var(--mut); font-size:.8rem; margin:12px 0 0; }
 
+  /* Friendly per-field helper text */
+  label .opt{ font-weight:400; color:var(--grey); font-size:.9em; }
+  .help{ color:var(--mut); font-size:.78rem; line-height:1.45; margin:6px 0 0; }
+  .help b{ color:var(--ink-soft); font-weight:500; }
+  .field{ margin-bottom:4px; }
+  .lead{ color:var(--ink-soft); font-size:.92rem; line-height:1.55; margin:-4px 0 20px; }
+  .lead b{ font-weight:600; }
+
   .ok{ color:var(--teal-deep); font-weight:500; }
   .err{ color:#D14343; white-space:pre-wrap; font-weight:500; }
   .hidden{ display:none; }
@@ -211,7 +219,7 @@
   </div>
 
   <h1>Add a <span class="accent">Condo</span></h1>
-  <p class="sub">Generate the condo data, choose a template, and publish the page. Nothing goes live until you merge the preview PR.</p>
+  <p class="sub">Three easy steps: fill in the condo details, pick who the page is for, then preview it. Nothing goes public until you give the final okay — so feel free to try things out.</p>
 
   <div class="card pw">
     <div class="lockicon" aria-hidden="true">
@@ -225,18 +233,39 @@
 
   <!-- STEP 1 -->
   <div class="card">
-    <div class="step"><span class="n">1</span><span class="txt">Generate data</span></div>
+    <div class="step"><span class="n">1</span><span class="txt">Tell us about the condo</span></div>
+    <p class="lead">Just fill in what you know — <b>plain words are fine</b>. We'll turn it into a proper page for you. Only the first two boxes are required.</p>
     <div class="row">
-      <div><label>Condo name</label><input id="name" placeholder="e.g. Sky Residence" /></div>
-      <div><label>Area / place</label><input id="area" placeholder="e.g. Bayan Lepas, Penang" /></div>
+      <div class="field">
+        <label>What's the condo called?</label>
+        <input id="name" placeholder="e.g. Sky Residence" />
+        <p class="help">The project name, exactly how it's advertised.</p>
+      </div>
+      <div class="field">
+        <label>Where is it?</label>
+        <input id="area" placeholder="e.g. Bayan Lepas, Penang" />
+        <p class="help">The area or town, and the state.</p>
+      </div>
     </div>
     <div class="row">
-      <div><label>Selling price(s)</label><input id="prices" placeholder="Type A RM495,000; B RM505,000" /></div>
-      <div><label>Parking</label><input id="parking" placeholder="2 bays @ RM100" /></div>
+      <div class="field">
+        <label>How much does a unit sell for? <span class="opt">— optional</span></label>
+        <input id="prices" placeholder="e.g. RM495,000" />
+        <p class="help">One price is fine. A few unit types? List them like <b>Type A RM495,000; Type B RM505,000</b>.</p>
+      </div>
+      <div class="field">
+        <label>Parking <span class="opt">— optional</span></label>
+        <input id="parking" placeholder="e.g. 2 bays @ RM100" />
+        <p class="help">How many bays, and the monthly fee if there is one.</p>
+      </div>
     </div>
-    <label>BD Infopack (PDF, optional)</label><input id="infopack" type="file" accept="application/pdf" />
-    <label>Floor plan images (select several)</label><input id="floorplans" type="file" accept="image/*" multiple />
-    <p class="hint">Keep total upload under ~4 MB. Generating reads the plans + pulls live comps (30–90s).</p>
+    <label>Got a brochure? <span class="opt">— optional</span></label>
+    <input id="infopack" type="file" accept="application/pdf" />
+    <p class="help">A PDF info pack helps us fill in the details. No brochure? Just skip this.</p>
+    <label>Floor plan pictures</label>
+    <input id="floorplans" type="file" accept="image/*" multiple />
+    <p class="help">Photos or screenshots of the floor plans. You can pick more than one — hold <b>Ctrl</b> (or <b>⌘</b> on Mac) while choosing.</p>
+    <p class="hint">Tip: keep all the files together under ~4 MB. When you click the button, it reads the plans and checks live prices nearby — this takes about 30–90 seconds, so give it a moment.</p>
     <div class="actions"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
   </div>
 
