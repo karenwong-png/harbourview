@@ -179,6 +179,22 @@
   .adv[open] summary::before{ transform:rotate(90deg); }
   .adv[open]{ padding-bottom:16px; }
   .adv textarea{ margin-top:2px; }
+
+  /* Editable rental-income (ROI) review */
+  .roi-edit{ margin-top:4px; }
+  .roi-lead{ font-size:.92rem; color:var(--ink-soft); line-height:1.5; margin:0 0 14px; }
+  .roi-lead b{ font-weight:600; }
+  .roi-type{ border:1px solid var(--line-strong); border-radius:14px; background:#FBFBFC; padding:12px 14px; margin-bottom:12px; }
+  .roi-type-h{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px; }
+  .roi-type-h b{ font-size:.95rem; font-weight:600; }
+  .roi-total{ font-size:.82rem; font-weight:600; color:var(--teal-deep); white-space:nowrap; }
+  .roi-row{ display:grid; grid-template-columns:1fr auto 14px auto; align-items:center; gap:8px; padding:5px 0; }
+  .roi-row + .roi-row{ border-top:1px dashed var(--line); }
+  .roi-name{ font-size:.85rem; color:var(--ink-soft); min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .roi-dash{ text-align:center; color:var(--mut); }
+  .money.sm{ width:118px; }
+  .money.sm input{ padding:7px 4px; font-size:.85rem; -moz-appearance:textfield; }
+  .money.sm input::-webkit-outer-spin-button,.money.sm input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
   @media (max-width:640px){
     .units-head{ display:none; }
     .urow{ grid-template-columns:1fr; gap:12px; padding:14px; border:1px solid var(--line); border-radius:14px; margin-bottom:10px; background:#fff; }
@@ -398,7 +414,10 @@
     <div class="step"><span class="n">3</span><span class="txt">Check it &amp; publish</span> <span class="pill" id="chosenLabel">Owner</span></div>
     <p class="muted" style="margin:-6px 0 18px">Here's what the page will show. Have a quick look — if the numbers look right, hit publish. Nothing goes public until you approve it on the next screen.</p>
     <div class="summary" id="summary"></div>
-    <p class="hint" id="publishAt" style="margin:2px 0 16px">Your new page will live at <code id="slugPreview"></code></p>
+
+    <div id="roiEdit" class="roi-edit"></div>
+
+    <p class="hint" id="publishAt" style="margin:16px 0 16px">Your new page will live at <code id="slugPreview"></code></p>
 
     <details class="adv">
       <summary>Advanced: edit the raw page data <span class="opt">— optional, for tech-savvy users</span></summary>
@@ -663,6 +682,8 @@ async function generate(){
 }
 
 let PUBLISH_BOTH = false;
+let CURRENT_KIND = 'owner';
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
 // Build the condo-data file + slug for one audience ('owner' | 'developer').
 function buildCondo(kind){
@@ -676,9 +697,9 @@ function buildCondo(kind){
   return { js:'window.CONDO = ' + JSON.stringify(C, null, 2) + ';', slug };
 }
 
-function applyTemplate(kind){
-  if(!BASE) return;
-  PUBLISH_BOTH = (kind==='both');
+// Rebuild the data file (+ summary + publish-at line) from BASE for the current audience.
+function syncFromBase(){
+  const kind = CURRENT_KIND;
   const primaryKind = (kind==='developer') ? 'developer' : 'owner';   // 'both' reviews the owner page
   const primary = buildCondo(primaryKind);
   $('condoData').value = primary.js; $('condoData').dataset.slug = primary.slug;
@@ -690,12 +711,62 @@ function applyTemplate(kind){
   } else {
     $('publishAt').innerHTML = 'Your new page will live at <code>/'+primary.slug+'</code>';
   }
+}
+
+function applyTemplate(kind){
+  if(!BASE) return;
+  CURRENT_KIND = kind;
+  PUBLISH_BOTH = (kind==='both');
+  syncFromBase();
+  renderRoiEditor();
   $('tplOwner').classList.toggle('active', kind==='owner');
   $('tplDev').classList.toggle('active', kind==='developer');
   $('tplBoth').classList.toggle('active', kind==='both');
   $('reviewCard').classList.remove('hidden'); $('reviewCard').classList.add('reveal');
   $('pubState').innerHTML=''; $('pubResult').innerHTML='';
   $('reviewCard').scrollIntoView({behavior:'smooth'});
+}
+
+// ---- Editable rental income per unit type (edits BASE.roi so owner + developer stay in sync) ----
+function roiRow(k,kind,i,r){
+  return '<div class="roi-row"><span class="roi-name" title="'+esc(r.name||'')+'">'+esc(r.name||(kind==='extras'?'Extra':'Room'))+'</span>'
+    + '<div class="money sm"><span class="pre">RM</span><input type="number" min="0" step="50" class="roi-in" data-k="'+esc(k)+'" data-kind="'+kind+'" data-i="'+i+'" data-b="lo" value="'+(r.lo||0)+'"></div>'
+    + '<span class="roi-dash">–</span>'
+    + '<div class="money sm"><span class="pre">RM</span><input type="number" min="0" step="50" class="roi-in" data-k="'+esc(k)+'" data-kind="'+kind+'" data-i="'+i+'" data-b="hi" value="'+(r.hi||0)+'"></div></div>';
+}
+function renderRoiEditor(){
+  const box = $('roiEdit');
+  const R = BASE && BASE.roi;
+  if(!R || !R.types || !Object.keys(R.types).length){ box.innerHTML=''; return; }
+  let html = '<p class="roi-lead"><b>Monthly rental income</b> — our estimate from local rentals (the numbers most worth checking). Adjust any that look off and the page updates automatically.</p>';
+  for(const k in R.types){
+    const t = R.types[k];
+    html += '<div class="roi-type"><div class="roi-type-h"><b>'+esc(t.label||('Type '+k))+'</b><span class="roi-total" id="roiTot-'+esc(k)+'"></span></div>';
+    (t.rooms||[]).forEach((r,i)=>{ html += roiRow(k,'rooms',i,r); });
+    (t.extras||[]).forEach((r,i)=>{ html += roiRow(k,'extras',i,r); });
+    html += '</div>';
+  }
+  box.innerHTML = html;
+  box.querySelectorAll('.roi-in').forEach(inp=> inp.addEventListener('input', onRoiEdit));
+  updateRoiTotals();
+}
+function onRoiEdit(e){
+  const d = e.target.dataset;
+  const v = Math.max(0, parseInt(e.target.value||'0',10)||0);
+  const arr = BASE.roi.types[d.k] && BASE.roi.types[d.k][d.kind];
+  if(arr && arr[d.i]) arr[d.i][d.b] = v;
+  syncFromBase();          // rebuild data + summary; editor DOM untouched so focus stays put
+  updateRoiTotals();
+}
+function updateRoiTotals(){
+  const R = BASE && BASE.roi; if(!R || !R.types) return;
+  for(const k in R.types){
+    const t = R.types[k]; let lo=0, hi=0;
+    (t.rooms||[]).forEach(r=>{ lo+=(r.lo||0); hi+=(r.hi||0); });
+    (t.extras||[]).forEach(r=>{ lo+=(r.lo||0); hi+=(r.hi||0); });
+    const el = document.getElementById('roiTot-'+k);
+    if(el) el.textContent = 'Total: RM '+lo.toLocaleString('en-US')+'–'+hi.toLocaleString('en-US')+' / mo';
+  }
 }
 
 function renderSummary(js){
