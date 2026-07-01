@@ -1,13 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
     "api/generate.js": { "maxDuration": 300 },
     "api/publish.js": { "maxDuration": 60 }
   },
   "rewrites": [
-    { "source": "/((?!js/|css/|data/|vendor/|api/|admin|.*\\.).*)", "destination": "/index.html" }
+    { "source": "/((?!js/|css/|data/|vendor/|api/|admin|favicon|.*\\.).*)", "destination": "/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
