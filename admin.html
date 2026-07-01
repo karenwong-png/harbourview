@@ -250,7 +250,9 @@
     padding:2px 7px; border-radius:6px; border:1px solid var(--line); }
 
   /* Template chooser */
-  .choice{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
+  .choice{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:4px; }
+  .tpl-both{ border-style:dashed; }
+  .tpl-both .tag{ color:var(--orange-deep); background:rgba(245,131,60,.12); }
   .tpl{
     position:relative; text-align:left; border:1.5px solid var(--line-strong);
     border-radius:18px; padding:20px; background:#fff; cursor:pointer; overflow:hidden;
@@ -365,8 +367,8 @@
 
   <!-- STEP 2 -->
   <div class="card hidden" id="choiceCard">
-    <div class="step"><span class="n">2</span><span class="txt">Choose a template</span></div>
-    <p class="muted" style="margin:-6px 0 18px">Same facts and numbers — different audience. Pick who this page is for.</p>
+    <div class="step"><span class="n">2</span><span class="txt">Who is this page for?</span></div>
+    <p class="muted" style="margin:-6px 0 18px">Same facts and numbers — different audience. Pick one, or choose “Both” to make an owner page and a developer page at once.</p>
     <div class="choice">
       <div class="tpl" id="tplOwner" data-kind="owner">
         <span class="tag">Investor</span>
@@ -378,6 +380,11 @@
         <h4>Developer</h4>
         <p>For the developer/landowner. Partnership model + per-unit economics as a buyer sales tool. Calculator hidden.</p>
       </div>
+      <div class="tpl tpl-both" id="tplBoth" data-kind="both">
+        <span class="tag">Owner + Developer</span>
+        <h4>Both</h4>
+        <p>Need both? Make the owner page and the developer page together — same numbers, published in one go.</p>
+      </div>
     </div>
   </div>
 
@@ -386,7 +393,7 @@
     <div class="step"><span class="n">3</span><span class="txt">Check it &amp; publish</span> <span class="pill" id="chosenLabel">Owner</span></div>
     <p class="muted" style="margin:-6px 0 18px">Here's what the page will show. Have a quick look — if the numbers look right, hit publish. Nothing goes public until you approve it on the next screen.</p>
     <div class="summary" id="summary"></div>
-    <p class="hint" style="margin:2px 0 16px">Your new page will live at <code id="slugPreview"></code></p>
+    <p class="hint" id="publishAt" style="margin:2px 0 16px">Your new page will live at <code id="slugPreview"></code></p>
 
     <details class="adv">
       <summary>Advanced: edit the raw page data <span class="opt">— optional, for tech-savvy users</span></summary>
@@ -627,8 +634,10 @@ async function generate(){
   finally{ $('genBtn').disabled=false; }
 }
 
-function applyTemplate(kind){
-  if(!BASE) return;
+let PUBLISH_BOTH = false;
+
+// Build the condo-data file + slug for one audience ('owner' | 'developer').
+function buildCondo(kind){
   const C = JSON.parse(JSON.stringify(BASE));
   const dev = C.dev; delete C.dev;
   if(kind==='developer'){
@@ -636,13 +645,26 @@ function applyTemplate(kind){
     if(dev){ if(dev.hero)C.hero=dev.hero; if(dev.cta)C.cta=dev.cta; if(dev.partnerModel)C.partnerModel=dev.partnerModel; }
   } else { C.template='owner'; if(C.partnerModel) delete C.partnerModel; }
   const slug = kind==='developer' ? BASE_SLUG+'-dev' : BASE_SLUG;
-  const js = 'window.CONDO = ' + JSON.stringify(C, null, 2) + ';';
-  $('condoData').value = js; $('condoData').dataset.slug = slug;
-  renderSummary(js);
-  $('chosenLabel').textContent = kind==='developer' ? 'Developer' : 'Owner';
-  $('slugPreview').textContent = '/'+slug;
+  return { js:'window.CONDO = ' + JSON.stringify(C, null, 2) + ';', slug };
+}
+
+function applyTemplate(kind){
+  if(!BASE) return;
+  PUBLISH_BOTH = (kind==='both');
+  const primaryKind = (kind==='developer') ? 'developer' : 'owner';   // 'both' reviews the owner page
+  const primary = buildCondo(primaryKind);
+  $('condoData').value = primary.js; $('condoData').dataset.slug = primary.slug;
+  renderSummary(primary.js);
+  $('chosenLabel').textContent = kind==='both' ? 'Owner + Developer' : (kind==='developer' ? 'Developer' : 'Owner');
+  if(kind==='both'){
+    const d = buildCondo('developer');
+    $('publishAt').innerHTML = 'Two pages will be created: <code>/'+primary.slug+'</code> (for owners) and <code>/'+d.slug+'</code> (for developers). You can fine-tune the owner page below; the developer page uses the same numbers.';
+  } else {
+    $('publishAt').innerHTML = 'Your new page will live at <code>/'+primary.slug+'</code>';
+  }
   $('tplOwner').classList.toggle('active', kind==='owner');
   $('tplDev').classList.toggle('active', kind==='developer');
+  $('tplBoth').classList.toggle('active', kind==='both');
   $('reviewCard').classList.remove('hidden'); $('reviewCard').classList.add('reveal');
   $('pubState').innerHTML=''; $('pubResult').innerHTML='';
   $('reviewCard').scrollIntoView({behavior:'smooth'});
@@ -665,16 +687,24 @@ $('condoData').addEventListener('input', e=>renderSummary(e.target.value));
 
 async function publish(){
   if(!pw()) return alert('Enter the team password.');
-  const slug = $('condoData').dataset.slug; const condoData = $('condoData').value;
-  if(!confirm('Publish "'+slug+'" to a PREVIEW branch + open a PR? (Nothing goes live until you merge it.)')) return;
+  const nm = $('name').value;
+  const pages = [{ slug:$('condoData').dataset.slug, condoData:$('condoData').value, name:nm }];
+  if(PUBLISH_BOTH){
+    const d = buildCondo('developer');
+    pages.push({ slug:d.slug, condoData:d.js, name:(nm||'')+' (Developer)' });
+  }
+  const what = PUBLISH_BOTH ? 'both pages ('+pages.map(p=>'/'+p.slug).join(' + ')+')' : '"'+pages[0].slug+'"';
+  if(!confirm('Publish '+what+' to a PREVIEW branch + open a PR? (Nothing goes live until you merge it.)')) return;
   $('pubBtn').disabled=true; $('pubState').innerHTML='<span class="spin">Committing to GitHub…</span>';
   try{
     const r = await fetch('/api/publish',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()},
-      body:JSON.stringify({ slug, condoData, name:$('name').value, area:$('area').value }) });
+      body:JSON.stringify({ pages, name:nm, area:$('area').value }) });
     const data = await readJson(r);
     if(!r.ok) throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Publish failed');
+    const slugs = data.slugs || pages.map(p=>p.slug);
+    const links = slugs.map(s=>'<code>/'+s+'</code>').join(' and ');
     $('pubState').innerHTML='<span class="ok">Committed to branch '+data.branch+'.</span>';
-    $('pubResult').innerHTML = 'Vercel is building a preview for this PR. <a href="'+(data.prUrl||'#')+'" target="_blank">Open the PR</a> → check the preview → <b>Merge</b> to publish at <code>/'+slug+'</code>.';
+    $('pubResult').innerHTML = 'Vercel is building a preview for this PR. <a href="'+(data.prUrl||'#')+'" target="_blank">Open the PR</a> → check the preview → <b>Merge</b> to publish '+(slugs.length>1?'both pages: ':'at ')+links+'.';
   }catch(e){ $('pubState').innerHTML='<span class="err">'+e.message+'</span>'; }
   finally{ $('pubBtn').disabled=false; }
 }
@@ -685,6 +715,7 @@ $('pw').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault()
 $('genBtn').addEventListener('click', generate);
 $('tplOwner').addEventListener('click', ()=>applyTemplate('owner'));
 $('tplDev').addEventListener('click', ()=>applyTemplate('developer'));
+$('tplBoth').addEventListener('click', ()=>applyTemplate('both'));
 $('reChoose').addEventListener('click', ()=>{ $('reviewCard').classList.add('hidden'); $('choiceCard').scrollIntoView({behavior:'smooth'}); });
 $('pubBtn').addEventListener('click', publish);
 $('addType').addEventListener('click', ()=>addUnitRow());
