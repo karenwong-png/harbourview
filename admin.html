@@ -292,7 +292,7 @@ Type C  RM520,000"></textarea>
       <input id="floorplans" type="file" accept="image/*" multiple />
       <p class="help">Photos or screenshots of the floor plans. You can pick more than one — hold <b>Ctrl</b> (or <b>⌘</b> on Mac) while choosing.</p>
     </div>
-    <p class="hint">Tip: keep all the files together under ~4 MB. When you click the button, it reads the plans and checks live prices nearby — this takes about 30–90 seconds, so give it a moment.</p>
+    <p class="hint">Tip: don't worry about photo size — we shrink the floor-plan images for you automatically. When you click the button, it reads the plans and checks live prices nearby — this takes about 30–90 seconds, so give it a moment.</p>
     <div class="actions"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
   </div>
 
@@ -361,18 +361,63 @@ function fileToB64(file){ return new Promise((res,rej)=>{ const r=new FileReader
   r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
 function parseCondo(js){ try{ const w={}; new Function('window', js+'; return window.CONDO;')(w); return w.CONDO||null; }catch(e){ return null; } }
 
+// Downscale + compress an image in the browser so uploads stay under the server limit.
+// Falls back to the raw file if it isn't an image or anything goes wrong.
+function compressImage(file, maxDim=1600, quality=0.82){
+  return new Promise(async (resolve)=>{
+    if(!file.type || !file.type.startsWith('image/')){
+      return resolve({ mediaType:file.type||'image/png', data:await fileToB64(file) });
+    }
+    try{
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = ()=>{
+        let {width:w, height:h} = img;
+        const scale = Math.min(1, maxDim/Math.max(w,h));
+        w = Math.round(w*scale); h = Math.round(h*scale);
+        const c = document.createElement('canvas'); c.width=w; c.height=h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);       // flatten transparency for JPEG
+        ctx.drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(url);
+        const dataUrl = c.toDataURL('image/jpeg', quality);
+        resolve({ mediaType:'image/jpeg', data:dataUrl.split(',')[1] });
+      };
+      img.onerror = async ()=>{ URL.revokeObjectURL(url); resolve({ mediaType:file.type||'image/png', data:await fileToB64(file) }); };
+      img.src = url;
+    }catch(e){ resolve({ mediaType:file.type||'image/png', data:await fileToB64(file) }); }
+  });
+}
+
+// Read a fetch response as JSON, but degrade gracefully when the server
+// returns plain text/HTML (e.g. a 413 "Request Entity Too Large").
+async function readJson(r){
+  const text = await r.text();
+  try{ return JSON.parse(text); }
+  catch(e){
+    if(r.status===413) throw new Error('Your files are too big to upload. Please use fewer or smaller images (and a smaller PDF), then try again.');
+    const snippet = (text||'').replace(/<[^>]*>/g,'').trim().slice(0,140);
+    throw new Error(snippet || ('Server error '+r.status));
+  }
+}
+
 async function generate(){
   if(!pw()) return alert('Enter the team password.');
   if(!$('name').value || !$('area').value) return alert('Name and area are required.');
-  $('genBtn').disabled=true; $('genState').innerHTML='<span class="spin">Reading plans & pulling live comps… (up to ~90s)</span>';
+  $('genBtn').disabled=true; $('genState').innerHTML='<span class="spin">Optimising images…</span>';
   try{
     const fp = [];
-    for(const f of $('floorplans').files){ fp.push({ mediaType:f.type||'image/png', data:await fileToB64(f) }); }
+    for(const f of $('floorplans').files){ fp.push(await compressImage(f)); }
     const body = { name:$('name').value, area:$('area').value, prices:$('prices').value, parking:$('parking').value, floorplans:fp };
     if($('infopack').files[0]) body.infopackBase64 = await fileToB64($('infopack').files[0]);
-    const r = await fetch('/api/generate',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()}, body:JSON.stringify(body) });
-    const data = await r.json();
-    if(!r.ok) throw new Error(data.error ? JSON.stringify(data.error) : 'Generate failed');
+    const payload = JSON.stringify(body);
+    // Vercel caps the request body at ~4.5 MB; keep a safety margin.
+    if(payload.length > 4_200_000)
+      throw new Error('Your files are still too big to upload (about '+Math.round(payload.length/1048576)+' MB). Please remove the PDF or use fewer / smaller floor-plan images, then try again.');
+    $('genState').innerHTML='<span class="spin">Reading plans & pulling live comps… (up to ~90s)</span>';
+    const r = await fetch('/api/generate',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()}, body:payload });
+    const data = await readJson(r);
+    if(!r.ok) throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Generate failed');
     BASE = parseCondo(data.condoData); BASE_SLUG = data.slug;
     if(!BASE) throw new Error('Generated data could not be parsed.');
     $('genState').innerHTML='<span class="ok">Done — now choose a template.</span>';
@@ -426,8 +471,8 @@ async function publish(){
   try{
     const r = await fetch('/api/publish',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()},
       body:JSON.stringify({ slug, condoData, name:$('name').value, area:$('area').value }) });
-    const data = await r.json();
-    if(!r.ok) throw new Error(data.error ? JSON.stringify(data.error) : 'Publish failed');
+    const data = await readJson(r);
+    if(!r.ok) throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Publish failed');
     $('pubState').innerHTML='<span class="ok">Committed to branch '+data.branch+'.</span>';
     $('pubResult').innerHTML = 'Vercel is building a preview for this PR. <a href="'+(data.prUrl||'#')+'" target="_blank">Open the PR</a> → check the preview → <b>Merge</b> to publish at <code>/'+slug+'</code>.';
   }catch(e){ $('pubState').innerHTML='<span class="err">'+e.message+'</span>'; }
