@@ -418,58 +418,56 @@ function fileToB64(file){ return new Promise((res,rej)=>{ const r=new FileReader
   r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
 function parseCondo(js){ try{ const w={}; new Function('window', js+'; return window.CONDO;')(w); return w.CONDO||null; }catch(e){ return null; } }
 
-// Downscale + compress an image in the browser so uploads stay under the server limit.
-// Falls back to the raw file if it isn't an image or anything goes wrong.
-function compressImage(file, maxDim=1600, quality=0.82){
-  return new Promise(async (resolve)=>{
-    if(!file.type || !file.type.startsWith('image/')){
-      return resolve({ mediaType:file.type||'image/png', data:await fileToB64(file) });
-    }
-    try{
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = ()=>{
-        let {width:w, height:h} = img;
-        const scale = Math.min(1, maxDim/Math.max(w,h));
-        w = Math.round(w*scale); h = Math.round(h*scale);
-        const c = document.createElement('canvas'); c.width=w; c.height=h;
-        const ctx = c.getContext('2d');
-        ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);       // flatten transparency for JPEG
-        ctx.drawImage(img,0,0,w,h);
-        URL.revokeObjectURL(url);
-        const dataUrl = c.toDataURL('image/jpeg', quality);
-        resolve({ mediaType:'image/jpeg', data:dataUrl.split(',')[1] });
-      };
-      img.onerror = async ()=>{ URL.revokeObjectURL(url); resolve({ mediaType:file.type||'image/png', data:await fileToB64(file) }); };
-      img.src = url;
-    }catch(e){ resolve({ mediaType:file.type||'image/png', data:await fileToB64(file) }); }
+// ---- Client-side compression so uploads stay under the server's ~4.5 MB limit ----
+const MAX_PDF_PAGES = 12;
+const UPLOAD_LIMIT  = 3_900_000;   // JSON payload ceiling (chars ≈ bytes), safety margin under 4.5 MB
+
+// Load a raster image file into a canvas, downscaled to maxDim. Returns null on failure.
+function imageToCanvas(file, maxDim){
+  return new Promise((resolve)=>{
+    if(!file.type || !file.type.startsWith('image/')) return resolve(null);
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      let {width:w, height:h} = img;
+      const s = Math.min(1, maxDim/Math.max(w,h));
+      w = Math.max(1,Math.round(w*s)); h = Math.max(1,Math.round(h*s));
+      const c = document.createElement('canvas'); c.width=w; c.height=h;
+      const ctx = c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url); resolve(c);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
   });
 }
-
-// Rasterise a PDF brochure into downscaled page images in the browser, so a
-// big PDF doesn't blow past the server's upload limit. Returns [{mediaType,data}].
-const MAX_PDF_PAGES = 12;
-async function pdfToImages(file, maxDim=1600, quality=0.7){
+// Render a PDF's pages onto canvases (once). Returns {canvases,total,used} or null.
+async function pdfToCanvases(file, maxDim=1400, maxPages=MAX_PDF_PAGES){
   const lib = window.pdfjsLib;
-  if(!lib) return null;                         // library failed to load → caller falls back
+  if(!lib) return null;
   lib.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.js';
-  const buf = await file.arrayBuffer();
-  const pdf = await lib.getDocument({ data:buf }).promise;
-  const pages = Math.min(pdf.numPages, MAX_PDF_PAGES);
-  const out = [];
-  for(let i=1; i<=pages; i++){
+  const pdf = await lib.getDocument({ data:await file.arrayBuffer() }).promise;
+  const used = Math.min(pdf.numPages, maxPages);
+  const canvases = [];
+  for(let i=1; i<=used; i++){
     const page = await pdf.getPage(i);
     const base = page.getViewport({ scale:1 });
     const scale = Math.min(2, maxDim/Math.max(base.width, base.height));
     const vp = page.getViewport({ scale });
     const c = document.createElement('canvas'); c.width=Math.ceil(vp.width); c.height=Math.ceil(vp.height);
-    const ctx = c.getContext('2d');
-    ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+    const ctx = c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
     await page.render({ canvasContext:ctx, viewport:vp }).promise;
-    out.push({ mediaType:'image/jpeg', data:c.toDataURL('image/jpeg', quality).split(',')[1] });
+    canvases.push(c);
   }
-  return { images:out, total:pdf.numPages, used:pages };
+  return { canvases, total:pdf.numPages, used };
 }
+// Re-scale a canvas by a factor (for the shrink loop).
+function scaleCanvas(c, factor){
+  const w = Math.max(1,Math.round(c.width*factor)), h = Math.max(1,Math.round(c.height*factor));
+  const n = document.createElement('canvas'); n.width=w; n.height=h;
+  const ctx = n.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); ctx.drawImage(c,0,0,w,h);
+  return n;
+}
+const canvasJpeg = (c,q)=> c.toDataURL('image/jpeg', q).split(',')[1];
 
 // Read a fetch response as JSON, but degrade gracefully when the server
 // returns plain text/HTML (e.g. a 413 "Request Entity Too Large").
@@ -552,33 +550,53 @@ async function generate(){
   if(!$('name').value || !$('area').value) return alert('Name and area are required.');
   $('genBtn').disabled=true; $('genState').innerHTML='<span class="spin">Optimising images…</span>';
   try{
-    const fp = [];
-    for(const f of $('floorplans').files){ fp.push(await compressImage(f)); }
-    const body = { name:$('name').value, area:$('area').value, prices:buildPrices(), parking:buildParking(), floorplans:fp };
     let note = '';
+    const meta = { name:$('name').value, area:$('area').value, prices:buildPrices(), parking:buildParking() };
+
+    // Render everything to canvases ONCE, then re-encode at decreasing quality until it fits.
+    const fpCanvas = [];
+    for(const f of $('floorplans').files){ const c = await imageToCanvas(f, 1600); if(c) fpCanvas.push(c); }
+
+    let pdfPack = null;                 // {canvases,total,used} or null
     const pdf = $('infopack').files[0];
     if(pdf){
       $('genState').innerHTML='<span class="spin">Reading the brochure…</span>';
-      let done = false;
-      try{
-        const res = await pdfToImages(pdf);
-        if(res && res.images.length){
-          body.infopackImages = res.images; done = true;
-          if(res.total > res.used) note = ' (Used the first '+res.used+' of '+res.total+' brochure pages.)';
-        }
-      }catch(err){ /* fall back to raw PDF below */ }
-      if(!done){
-        // pdf.js unavailable or failed — send the raw PDF only if it's small enough.
-        const b64 = await fileToB64(pdf);
-        if(b64.length > 3_500_000)
-          throw new Error("That PDF is too large to read in the browser. Please attach a smaller PDF (or skip it), then try again.");
-        body.infopackBase64 = b64;
-      }
+      try{ pdfPack = await pdfToCanvases(pdf, 1400); }catch(err){ pdfPack = null; }
     }
-    const payload = JSON.stringify(body);
-    // Vercel caps the request body at ~4.5 MB; keep a safety margin.
-    if(payload.length > 4_200_000)
-      throw new Error('Your files are still too big to upload (about '+Math.round(payload.length/1048576)+' MB). Please use fewer / smaller floor-plan images (and a shorter PDF), then try again.');
+
+    // Adaptive fit: lower JPEG quality first, then scale the canvases down.
+    $('genState').innerHTML='<span class="spin">Optimising your files…</span>';
+    let payload, body, q = 0.82, scale = 1, dropPdf = false;
+    for(let attempt=0; attempt<8; attempt++){
+      const fpS = scale===1 ? fpCanvas : fpCanvas.map(c=>scaleCanvas(c,scale));
+      body = { ...meta, floorplans: fpS.map(c=>({ mediaType:'image/jpeg', data:canvasJpeg(c,q) })) };
+      if(pdfPack && !dropPdf){
+        const pS = scale===1 ? pdfPack.canvases : pdfPack.canvases.map(c=>scaleCanvas(c,scale));
+        body.infopackImages = pS.map(c=>({ mediaType:'image/jpeg', data:canvasJpeg(c, Math.max(0.4,q-0.12)) }));
+      }
+      payload = JSON.stringify(body);
+      if(payload.length <= UPLOAD_LIMIT) break;
+      if(q > 0.5) q -= 0.12; else scale *= 0.82;      // squeeze quality, then dimensions
+    }
+
+    // Still too big even with the brochure — drop it but keep generating from the photos.
+    if(payload.length > UPLOAD_LIMIT && pdfPack){
+      dropPdf = true; delete body.infopackImages; payload = JSON.stringify(body);
+      note = ' (The brochure was too large to include, so this was generated from the floor-plan photos only.)';
+    }
+    // Fallback: pdf.js unavailable but a small raw PDF was attached — send it as-is.
+    if(pdf && !pdfPack && !dropPdf){
+      const b64 = await fileToB64(pdf);
+      const withPdf = JSON.stringify({ ...body, infopackBase64:b64 });
+      if(withPdf.length <= UPLOAD_LIMIT){ body.infopackBase64 = b64; payload = withPdf; }
+      else note = ' (The brochure was too large to include, so this was generated from the floor-plan photos only.)';
+    }
+    if(pdfPack && pdfPack.total > pdfPack.used && !dropPdf)
+      note = ' (Used the first '+pdfPack.used+' of '+pdfPack.total+' brochure pages.)';
+
+    if(payload.length > UPLOAD_LIMIT)
+      throw new Error('Your floor-plan photos are still too big to upload (about '+(payload.length/1048576).toFixed(1)+' MB). Please choose fewer photos and try again.');
+
     $('genState').innerHTML='<span class="spin">Reading plans & pulling live comps… (up to ~90s)</span>';
     const r = await fetch('/api/generate',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()}, body:payload });
     const data = await readJson(r);
