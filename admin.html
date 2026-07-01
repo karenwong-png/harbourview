@@ -115,8 +115,13 @@
     font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:.78rem; line-height:1.55;
     min-height:230px; white-space:pre; background:#FBFBFC;
   }
+  /* Friendly multi-line text box (one item per line) */
+  textarea.lines{
+    font-family:inherit; font-size:.92rem; line-height:1.55;
+    min-height:0; white-space:pre-wrap; background:#fff; resize:vertical;
+  }
 
-  .row{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin-bottom:22px; }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin-bottom:22px; align-items:start; }
 
   /* Buttons */
   .btn{
@@ -251,8 +256,10 @@
     <div class="row">
       <div class="field">
         <label>How much does a unit sell for? <span class="opt">— optional</span></label>
-        <input id="prices" placeholder="e.g. RM495,000" />
-        <p class="help">One price is fine. A few unit types? List them like <b>Type A RM495,000; Type B RM505,000</b>.</p>
+        <textarea id="prices" class="lines" rows="4" placeholder="Type A  RM495,000
+Type B  RM505,000
+Type C  RM520,000"></textarea>
+        <p class="help"><b>One unit type per line</b> — just press Enter for each new one. Got lots of types? No problem, keep adding lines. Only one price? A single line is fine.</p>
       </div>
       <div class="field">
         <label>Parking <span class="opt">— optional</span></label>
