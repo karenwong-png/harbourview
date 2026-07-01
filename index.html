@@ -24,6 +24,30 @@
 <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
 <link rel="stylesheet" href="/css/styles.css?v=20260622k" />
 <link rel="stylesheet" href="/css/redesign.css?v=20260622j" />
+<style>
+/* ---- Template toggle (owner vs developer) ---- */
+body[data-template="developer"] .owner-only { display: none !important; }
+body[data-template="owner"] .developer-only,
+body:not([data-template]) .developer-only { display: none !important; }
+/* ---- Developer partnership section ---- */
+.partnership { padding: 5rem 0; background: #f8f7f5; }
+.partnership .partner-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 1.25rem; margin-top: 2rem; }
+.partner-card { background:#fff; border:1px solid #ececec; border-radius:16px; padding:1.5rem; }
+.partner-ico { width:44px; height:44px; border-radius:50%; background:#c64a2c; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; margin-bottom:.85rem; }
+.partner-card h3 { margin:.2rem 0 .4rem; font-size:1.05rem; }
+.partner-card p { margin:0; color:#555; font-size:.92rem; line-height:1.5; }
+/* ---- Developer per-unit economics ---- */
+.dev-econ { padding: 4.5rem 0; }
+.dev-econ .econ-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.1rem; margin-top:1.8rem; }
+.econ-card { background:#fff; border:1px solid #ececec; border-radius:16px; padding:1.5rem; }
+.econ-card.econ-hot { border-color:#c64a2c; box-shadow:0 8px 30px rgba(198,74,44,.12); }
+.econ-name { font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:#888; font-weight:600; }
+.econ-amt { font-size:1.5rem; font-weight:700; color:#1f2937; margin:.35rem 0; }
+.econ-amt span { font-size:.85rem; font-weight:500; color:#999; }
+.econ-card.econ-hot .econ-amt { color:#c64a2c; }
+.econ-note { font-size:.82rem; color:#666; }
+.dev-econ .econ-foot { font-size:.78rem; color:#999; margin-top:1rem; }
+</style>
 </head>
 <body>
 
@@ -40,7 +64,7 @@
     <a href="#scoring">Co-Living Score</a>
     <a href="#calculator">Floor Plans & ROI</a>
   </div>
-  <a class="btn btn-primary nav-cta" href="https://wa.link/yxfq39" target="_blank" rel="noopener noreferrer">Get a free assessment</a>
+  <a class="btn btn-primary nav-cta" data-cta-label href="https://wa.link/yxfq39" target="_blank" rel="noopener noreferrer">Get a free assessment</a>
 </nav>
 
 <!-- ============ HERO ============ -->
@@ -55,7 +79,7 @@
       </h1>
       <p class="hero-sub" id="hero-sub">A fully integrated co-living investment ecosystem at Harbour Place, Butterworth, Penang — converting your unit into a high-yield, hassle-free rental asset.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="https://wa.link/yxfq39" target="_blank" rel="noopener noreferrer">Get a free unit assessment</a>
+        <a class="btn btn-primary" data-cta-label href="https://wa.link/yxfq39" target="_blank" rel="noopener noreferrer">Get a free unit assessment</a>
         <a class="btn btn-ghost" href="#calculator">Model my ROI</a>
       </div>
       <div class="hero-meta" id="hero-meta">
@@ -790,13 +814,33 @@
 </section>
 
 <!-- ============ ROI CALCULATOR ============ -->
-<section class="roi-section" id="calculator">
+<section class="partnership developer-only" id="partnership">
+  <div class="container">
+    <div class="eyebrow" id="partner-eyebrow">A Co-Living Operating Partnership</div>
+    <h2 class="section-title" id="partner-title">Partner with BeLive to operate co-living at scale.</h2>
+    <p class="section-lead" id="partner-lead"></p>
+    <div class="partner-grid" id="partnership-grid"></div>
+  </div>
+</section>
+
+<section class="dev-econ developer-only" id="dev-economics">
+  <div class="container">
+    <div class="eyebrow">Per-Unit Economics</div>
+    <h2 class="section-title">A ready-made <span class="accent-orange">yield story for your buyers.</span></h2>
+    <p class="section-lead">The same managed co-living numbers, presentable at your sales gallery — what each unit can earn under BeLive management.</p>
+    <div class="econ-grid" id="dev-econ-grid"></div>
+    <p class="econ-foot" id="dev-econ-type"></p>
+    <p class="econ-foot">Indicative gross figures, comp-backed. Net returns are lower after costs. BeLive operates; owners earn.</p>
+  </div>
+</section>
+
+<section class="roi-section owner-only" id="calculator">
   <div id="roi-calculator"></div>
 </section>
 
 <!-- ============ PRICING / PARTNER BENEFITS (hidden) ============ -->
 <!--
-<section class="pricing">
+<section class="pricing owner-only">
   <div class="container">
     <div class="eyebrow">Exclusive Partner Benefits</div>
     <h2 class="section-title">A special rate for <span class="accent-orange">Harbour View owners</span>.</h2>
@@ -857,7 +901,7 @@
 
 <!-- ============ INCLUDED FEATURES (hidden) ============ -->
 <!--
-<section class="included">
+<section class="included owner-only">
   <div class="container">
     <div class="eyebrow">What's Included</div>
     <h2 class="section-title">Full service. <span class="accent-orange">No surprises.</span></h2>

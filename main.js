@@ -451,16 +451,175 @@
     update(false);
   }
 
+  // ============ Data-driven content: hero / suitability / scoring ============
+  // These render the page chrome from window.CONDO so the whole site updates
+  // from condo-data.js alone. Each is defensive: if a hook or data is missing,
+  // it leaves the existing HTML (a no-JS fallback) untouched.
+  function dq(sel) { return document.querySelector(sel); }
+  function setText(sel, val) { var e = dq(sel); if (e && val != null) e.textContent = val; }
+  function setHTML(sel, html) { var e = dq(sel); if (e && html != null) e.innerHTML = html; }
+
+  function renderTemplate() {
+    var t = (CONDO.template === 'developer') ? 'developer' : 'owner';
+    document.body.setAttribute('data-template', t);
+    // CTA label swap (optional, data-driven)
+    if (CONDO.cta && CONDO.cta.label) {
+      [].forEach.call(document.querySelectorAll('[data-cta-label]'), function (el) { el.textContent = CONDO.cta.label; });
+    }
+    renderPartnership();
+    if (t === 'developer') renderDevEconomics();
+  }
+  function renderPartnership() {
+    var P = CONDO.partnerModel; var host = dq('#partnership-grid');
+    if (!host) return;
+    if (!P || !P.items) { return; }
+    setText('#partner-eyebrow', P.eyebrow);
+    setText('#partner-title', P.title);
+    setText('#partner-lead', P.lead);
+    host.innerHTML = P.items.map(function (it) {
+      return '<div class="partner-card"><div class="partner-ico">' + (it.icon || '◆') + '</div>' +
+             '<h3>' + it.head + '</h3><p>' + it.body + '</p></div>';
+    }).join('');
+  }
+  function renderDevEconomics() {
+    var host = dq('#dev-econ-grid'); if (!host) return;
+    var R = CONDO.roi; if (!R || !R.types) return;
+    var key = R.defaultType || Object.keys(R.types)[0];
+    var t = R.types[key]; if (!t) return;
+    function sum(arr) { return (arr || []).reduce(function (a, x) { return [a[0] + (x.lo || 0), a[1] + (x.hi || 0)]; }, [0, 0]); }
+    function f(n) { return Number(n || 0).toLocaleString('en-US'); }
+    var rooms = sum(t.rooms);
+    var parking = sum((t.extras || []).filter(function (e) { return e.id === 'parking'; }));
+    var part = sum((t.extras || []).filter(function (e) { return e.id !== 'parking'; }));
+    var whole = [t.wholeLo || 0, t.wholeHi || 0];
+    var co = [rooms[0] + parking[0], rooms[1] + parking[1]];
+    var opt = [co[0] + part[0], co[1] + part[1]];
+    var price = t.defaultPrice || 0;
+    function yld(m) { return price ? (m * 12 / price * 100).toFixed(1) : null; }
+    var scen = [
+      { name: 'Whole Unit', m: whole, note: 'Rented as-is' },
+      { name: 'Co-Living', m: co, note: 'Room-by-room + parking' },
+      { name: 'Optimized', m: opt, note: '+ partition room', hot: true }
+    ];
+    host.innerHTML = scen.map(function (s) {
+      var yl = price ? (' · ' + yld(s.m[0]) + '–' + yld(s.m[1]) + '% gross') : '';
+      return '<div class="econ-card' + (s.hot ? ' econ-hot' : '') + '">' +
+        '<div class="econ-name">' + s.name + '</div>' +
+        '<div class="econ-amt">RM ' + f(s.m[0]) + ' – ' + f(s.m[1]) + '<span>/mo</span></div>' +
+        '<div class="econ-note">' + s.note + yl + '</div></div>';
+    }).join('');
+    setText('#dev-econ-type', 'Based on Type ' + key + (t.spec ? ' · ' + t.spec : ''));
+  }
+
+  function renderMeta() {
+    if (!CONDO.meta) return;
+    if (CONDO.meta.title) document.title = CONDO.meta.title;
+    var md = dq('meta[name="description"]');
+    if (md && CONDO.meta.description) md.setAttribute('content', CONDO.meta.description);
+  }
+
+  function renderHero() {
+    var H = CONDO.hero; if (!H) return;
+    setText('#hero-eyebrow', H.eyebrow);
+    setText('#hero-sub', H.sub);
+    var meta = dq('#hero-meta');
+    if (meta && H.stats) {
+      meta.innerHTML = H.stats.map(function (s) {
+        return '<div><strong>' + s.value + '</strong><span>' + s.label + '</span></div>';
+      }).join('');
+    }
+  }
+
+  function renderSuitability() {
+    var S = CONDO.suitability; if (!S) return;
+    setText('#suit-eyebrow', S.eyebrow);
+    if (S.titleLead || S.titleAccent) {
+      setHTML('#suit-title', (S.titleLead || '') + ' <span class="accent-orange">' + (S.titleAccent || '') + '</span>');
+    }
+    setText('#suit-lead', S.lead);
+    setText('#suit-pop', S.pop);
+    var wrap = dq('#suit-stats');
+    if (wrap && S.stats) {
+      var nums = wrap.querySelectorAll('.stat-number');
+      var labs = wrap.querySelectorAll('.stat-label');
+      S.stats.forEach(function (st, i) {
+        if (nums[i]) nums[i].textContent = st.value;
+        if (labs[i]) labs[i].textContent = st.label;
+      });
+    }
+  }
+
+  function renderScoring() {
+    var SC = CONDO.scoring; if (!SC || !SC.rows) return;
+    setText('#score-eyebrow', SC.eyebrow);
+    if (SC.recommended) {
+      setHTML('#score-title', NAME + ' is <span class="accent-orange">recommended for co-living</span>.');
+    }
+    var total = SC.rows.reduce(function (a, r) { return a + (r.score || 0); }, 0);
+    var grid = dq('#score-grid');
+    if (grid) {
+      grid.innerHTML = SC.rows.map(function (r) {
+        var w = Math.max(0, Math.min(100, (r.score || 0) * 10));
+        return '<div class="score-row"><div class="score-criteria">' + r.label + '</div>' +
+          '<div class="score-assessment">' + (r.note || '') + '</div>' +
+          '<div class="score-bar"><div class="score-bar-track"><div class="score-bar-fill" style="width:' + w + '%"></div></div>' +
+          '<div class="score-value">' + r.score + '/10</div></div></div>';
+      }).join('');
+    }
+    setHTML('#score-lead', 'Scoring <strong>' + total + '/100</strong> in BeLive\u2019s co-living suitability assessment.');
+    var big = dq('#score-total');
+    if (big) big.innerHTML = total + '<span style="opacity:0.6; font-size:0.5em;">/100</span>';
+  }
+
   // ============ Init on DOM ready ============
   function initAll() {
+    renderTemplate();
+    renderMeta();
+    renderHero();
+    renderSuitability();
+    renderScoring();
     initTypeTabs();
     initScrollReveal();
     initMap();
     initRoiCalculator();
   }
+  // ============ Multi-condo bootstrap ============
+  // The condo to show comes from the URL: path (/harbour-view) or ?c=harbour-view.
+  // Defaults to harbour-view. Adding a condo = add /data/<slug>.js — no code change.
+  function condoSlug() {
+    var path = location.pathname.replace(/^\/+|\/+$/g, '');
+    var q = (new URLSearchParams(location.search)).get('c');
+    var slug = (path || q || 'harbour-view').toLowerCase().replace(/[^a-z0-9-]/g, '');
+    return slug || 'harbour-view';
+  }
+  function loadCondoData(slug, cb) {
+    var s = document.createElement('script');
+    s.src = '/data/' + slug + '.js?v=' + Date.now();
+    s.onload = function () { cb(!!window.CONDO); };
+    s.onerror = function () { cb(false); };
+    document.head.appendChild(s);
+  }
+  function showNotFound(slug) {
+    document.title = 'Condo not found';
+    var sub = document.querySelector('#hero-sub');
+    if (sub) sub.textContent = 'We couldn\u2019t find “' + slug + '”. Check the link or pick a condo from the directory.';
+    var meta = document.querySelector('#hero-meta'); if (meta) meta.innerHTML = '';
+  }
+  function boot() {
+    var slug = condoSlug();
+    loadCondoData(slug, function (ok) {
+      if (!ok) { showNotFound(slug); return; }
+      // re-bind the closure vars now that the condo data is loaded
+      CONDO = window.CONDO;
+      THEME = (CONDO.meta && CONDO.meta.themeColor) || '#c64a2c';
+      NAME = CONDO.name || 'the property';
+      SHORT = CONDO.shortName || NAME;
+      initAll();
+    });
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    initAll();
+    boot();
   }
 })();
