@@ -7,10 +7,11 @@
   * { box-sizing:border-box; } body { font-family:system-ui,Segoe UI,Roboto,sans-serif; margin:0; background:var(--bg); color:var(--ink); }
   .wrap { max-width:880px; margin:0 auto; padding:28px 18px 80px; }
   h1 { font-size:1.5rem; margin:0 0 4px; } .sub { color:var(--mut); margin:0 0 24px; }
+  .step { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--o); font-weight:700; margin-bottom:6px; }
   .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:18px; }
   label { display:block; font-weight:600; font-size:.85rem; margin:12px 0 6px; }
   input,textarea { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:9px; font:inherit; }
-  textarea { font-family:ui-monospace,Menlo,monospace; font-size:.8rem; min-height:240px; white-space:pre; }
+  textarea { font-family:ui-monospace,Menlo,monospace; font-size:.8rem; min-height:220px; white-space:pre; }
   .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .btn { background:var(--o); color:#fff; border:0; border-radius:10px; padding:12px 18px; font-weight:700; cursor:pointer; font-size:.95rem; }
   .btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
@@ -22,39 +23,65 @@
   .ok { color:#15803d; } .err { color:#b91c1c; white-space:pre-wrap; }
   .hidden { display:none; } .spin { color:var(--o); font-weight:600; }
   a { color:var(--o); }
+  .choice { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px; }
+  .tpl { text-align:left; border:2px solid var(--line); border-radius:14px; padding:16px; background:#fff; cursor:pointer; transition:.15s; }
+  .tpl:hover { border-color:var(--o); }
+  .tpl.active { border-color:var(--o); background:#fff7f4; }
+  .tpl h4 { margin:0 0 4px; font-size:1rem; } .tpl p { margin:0; color:var(--mut); font-size:.82rem; line-height:1.45; }
+  .pill { display:inline-block; background:var(--o); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:99px; margin-left:6px; }
 </style></head>
 <body><div class="wrap">
   <h1>Add a Condo</h1>
-  <p class="sub">Upload the BD Infopack + floor plans → generate → review the numbers → publish to a preview. Nothing goes live until you merge the PR.</p>
+  <p class="sub">Generate the condo data → choose a template → publish the page. Nothing goes live until you merge the preview PR.</p>
 
   <div class="card">
     <label>Team password</label>
     <input id="pw" type="password" placeholder="ask your admin" autocomplete="off" />
   </div>
 
+  <!-- STEP 1 -->
   <div class="card">
+    <div class="step">Step 1 · Generate data</div>
     <div class="row">
       <div><label>Condo name</label><input id="name" placeholder="e.g. Sky Residence" /></div>
       <div><label>Area / place</label><input id="area" placeholder="e.g. Bayan Lepas, Penang" /></div>
     </div>
     <div class="row">
-      <div><label>Selling price(s)</label><input id="prices" placeholder="Type A RM495,000; A1 RM544,000; B RM505,000" /></div>
+      <div><label>Selling price(s)</label><input id="prices" placeholder="Type A RM495,000; B RM505,000" /></div>
       <div><label>Parking</label><input id="parking" placeholder="2 bays @ RM100" /></div>
     </div>
-    <label>BD Infopack (PDF)</label><input id="infopack" type="file" accept="application/pdf" />
-    <label>Floor plan images (you can select several)</label><input id="floorplans" type="file" accept="image/*" multiple />
-    <p class="muted">Tip: keep total upload under ~4 MB. The generate step pulls live rent comps and can take 30–90s.</p>
+    <label>BD Infopack (PDF, optional)</label><input id="infopack" type="file" accept="application/pdf" />
+    <label>Floor plan images (select several)</label><input id="floorplans" type="file" accept="image/*" multiple />
+    <p class="muted">Keep total upload under ~4 MB. Generating reads the plans + pulls live comps (30–90s).</p>
     <div style="margin-top:14px"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
   </div>
 
-  <div class="card hidden" id="resultCard">
-    <h3 style="margin:0 0 4px">Review</h3>
-    <p class="muted">Eyeball these before publishing — especially the ROI. Edit the file directly if needed.</p>
+  <!-- STEP 2 -->
+  <div class="card hidden" id="choiceCard">
+    <div class="step">Step 2 · Choose a template</div>
+    <p class="muted" style="margin-top:0">Same facts and numbers — different audience. Pick who this page is for.</p>
+    <div class="choice">
+      <div class="tpl" id="tplOwner" data-kind="owner">
+        <h4>Owner</h4>
+        <p>For an individual unit owner/investor. ROI calculator, pricing, “convert your unit”, hassle-free framing.</p>
+      </div>
+      <div class="tpl" id="tplDev" data-kind="developer">
+        <h4>Developer</h4>
+        <p>For the developer/landowner. Partnership model + per-unit economics as a buyer sales tool. Calculator hidden.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card hidden" id="reviewCard">
+    <div class="step">Step 3 · Review &amp; publish <span class="pill" id="chosenLabel">Owner</span></div>
+    <p class="muted" style="margin-top:0">Page will publish at <code id="slugPreview"></code>. Eyeball the numbers, edit the file if needed, then publish.</p>
     <div class="summary" id="summary"></div>
     <label>condo-data.js (editable)</label>
     <textarea id="condoData" spellcheck="false"></textarea>
     <div style="margin-top:14px">
-      <button class="btn" id="pubBtn">Publish to preview</button>
+      <button class="btn" id="pubBtn">Publish page to preview</button>
+      <button class="btn ghost" id="reChoose" type="button">← Change template</button>
       <span id="pubState" class="muted"></span>
     </div>
     <div id="pubResult" class="muted" style="margin-top:12px"></div>
@@ -64,9 +91,11 @@
 <script>
 const $ = id => document.getElementById(id);
 const pw = () => $('pw').value.trim();
+let BASE = null, BASE_SLUG = '';
 
 function fileToB64(file){ return new Promise((res,rej)=>{ const r=new FileReader();
   r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
+function parseCondo(js){ try{ const w={}; new Function('window', js+'; return window.CONDO;')(w); return w.CONDO||null; }catch(e){ return null; } }
 
 async function generate(){
   if(!pw()) return alert('Enter the team password.');
@@ -80,20 +109,40 @@ async function generate(){
     const r = await fetch('/api/generate',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()}, body:JSON.stringify(body) });
     const data = await r.json();
     if(!r.ok) throw new Error(data.error ? JSON.stringify(data.error) : 'Generate failed');
-    $('condoData').value = data.condoData;
-    $('condoData').dataset.slug = data.slug;
-    renderSummary(data.condoData);
-    $('resultCard').classList.remove('hidden');
-    $('genState').innerHTML='<span class="ok">Done — review below.</span>';
-    $('resultCard').scrollIntoView({behavior:'smooth'});
+    BASE = parseCondo(data.condoData); BASE_SLUG = data.slug;
+    if(!BASE) throw new Error('Generated data could not be parsed.');
+    $('genState').innerHTML='<span class="ok">Done — now choose a template.</span>';
+    $('choiceCard').classList.remove('hidden');
+    $('reviewCard').classList.add('hidden');
+    $('choiceCard').scrollIntoView({behavior:'smooth'});
   }catch(e){ $('genState').innerHTML='<span class="err">'+e.message+'</span>'; }
   finally{ $('genBtn').disabled=false; }
 }
 
-function parseCondo(js){ try{ const w={}; new Function('window', js+'; return window.CONDO;')(w); return w.CONDO||JSON.parse('null'); }catch(e){ return null; } }
+function applyTemplate(kind){
+  if(!BASE) return;
+  const C = JSON.parse(JSON.stringify(BASE));
+  const dev = C.dev; delete C.dev;
+  if(kind==='developer'){
+    C.template='developer';
+    if(dev){ if(dev.hero)C.hero=dev.hero; if(dev.cta)C.cta=dev.cta; if(dev.partnerModel)C.partnerModel=dev.partnerModel; }
+  } else { C.template='owner'; if(C.partnerModel) delete C.partnerModel; }
+  const slug = kind==='developer' ? BASE_SLUG+'-dev' : BASE_SLUG;
+  const js = 'window.CONDO = ' + JSON.stringify(C, null, 2) + ';';
+  $('condoData').value = js; $('condoData').dataset.slug = slug;
+  renderSummary(js);
+  $('chosenLabel').textContent = kind==='developer' ? 'Developer' : 'Owner';
+  $('slugPreview').textContent = '/'+slug;
+  $('tplOwner').classList.toggle('active', kind==='owner');
+  $('tplDev').classList.toggle('active', kind==='developer');
+  $('reviewCard').classList.remove('hidden');
+  $('pubState').innerHTML=''; $('pubResult').innerHTML='';
+  $('reviewCard').scrollIntoView({behavior:'smooth'});
+}
+
 function renderSummary(js){
   const c = parseCondo(js); const box=$('summary');
-  if(!c){ box.innerHTML='<div class="err">Could not parse — check the file syntax below.</div>'; return; }
+  if(!c){ box.innerHTML='<div class="err">Could not parse — check syntax below.</div>'; return; }
   const chips = (c.hero&&c.hero.stats||[]).map(s=>`<div class="stat"><b>${s.value||'—'}</b><span>${s.label||''}</span></div>`).join('');
   let roi=''; const t=c.roi&&c.roi.types||{};
   for(const k in t){ const d=t[k]; const rooms=(d.rooms||[]).reduce((a,r)=>[a[0]+(r.lo||0),a[1]+(r.hi||0)],[0,0]);
@@ -101,9 +150,9 @@ function renderSummary(js){
     const part=(d.extras||[]).filter(e=>e.id!=='parking').reduce((a,r)=>[a[0]+(r.lo||0),a[1]+(r.hi||0)],[0,0]);
     const opt=[rooms[0]+park[0]+part[0], rooms[1]+park[1]+part[1]];
     roi+=`<div class="stat"><b>RM ${opt[0]}–${opt[1]}</b><span>${k} Optimized / mo</span></div>`; }
-  box.innerHTML = `<div class="stat"><b>${c.name||'—'}</b><span>condo</span></div>` + chips + roi;
+  box.innerHTML = `<div class="stat"><b>${c.name||'—'} <span style="color:var(--o)">(${c.template||'owner'})</span></b><span>condo · template</span></div>` + chips + roi;
 }
-$('condoData') && $('condoData').addEventListener('input', e=>renderSummary(e.target.value));
+$('condoData').addEventListener('input', e=>renderSummary(e.target.value));
 
 async function publish(){
   if(!pw()) return alert('Enter the team password.');
@@ -116,11 +165,15 @@ async function publish(){
     const data = await r.json();
     if(!r.ok) throw new Error(data.error ? JSON.stringify(data.error) : 'Publish failed');
     $('pubState').innerHTML='<span class="ok">Committed to branch '+data.branch+'.</span>';
-    $('pubResult').innerHTML = 'Vercel is building a preview for this PR. <a href="'+(data.prUrl||'#')+'" target="_blank">Open the PR</a> → check the preview deployment → <b>Merge</b> to publish at <code>/'+slug+'</code>.';
+    $('pubResult').innerHTML = 'Vercel is building a preview for this PR. <a href="'+(data.prUrl||'#')+'" target="_blank">Open the PR</a> → check the preview → <b>Merge</b> to publish at <code>/'+slug+'</code>.';
   }catch(e){ $('pubState').innerHTML='<span class="err">'+e.message+'</span>'; }
   finally{ $('pubBtn').disabled=false; }
 }
+
 $('genBtn').addEventListener('click', generate);
+$('tplOwner').addEventListener('click', ()=>applyTemplate('owner'));
+$('tplDev').addEventListener('click', ()=>applyTemplate('developer'));
+$('reChoose').addEventListener('click', ()=>{ $('reviewCard').classList.add('hidden'); $('choiceCard').scrollIntoView({behavior:'smooth'}); });
 $('pubBtn').addEventListener('click', publish);
 </script>
 </body></html>
