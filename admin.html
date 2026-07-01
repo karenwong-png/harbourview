@@ -602,7 +602,7 @@ async function generate(){
     const data = await readJson(r);
     if(!r.ok) throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Generate failed');
     BASE = parseCondo(data.condoData); BASE_SLUG = data.slug;
-    if(!BASE) throw new Error('Generated data could not be parsed.');
+    if(!BASE) throw new Error('The generated data came back incomplete. Please click Generate again — it usually works on a second try.');
     $('genState').innerHTML='<span class="ok">Done — now choose a template.'+note+'</span>';
     $('choiceCard').classList.remove('hidden'); $('choiceCard').classList.add('reveal');
     $('reviewCard').classList.add('hidden');

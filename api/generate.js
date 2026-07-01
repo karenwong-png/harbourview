@@ -20,9 +20,24 @@ function extractCondo(text) {
   const i = t.indexOf('window.CONDO');
   if (i === -1) return null;
   t = t.slice(i);
-  // keep through the last closing "};"
-  const end = t.lastIndexOf('};');
-  return end === -1 ? t : t.slice(0, end + 2);
+  const open = t.indexOf('{');
+  if (open === -1) return null;
+  // Walk the object and stop at the matching close brace (ignoring braces inside strings).
+  let depth = 0, inStr = false, quote = '', esc = false, endIdx = -1;
+  for (let k = open; k < t.length; k++) {
+    const ch = t[k];
+    if (esc) { esc = false; continue; }
+    if (inStr) {
+      if (ch === '\\') esc = true;
+      else if (ch === quote) inStr = false;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === '`') { inStr = true; quote = ch; continue; }
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) { endIdx = k; break; } }
+  }
+  if (endIdx === -1) return null;                              // truncated / unbalanced
+  return 'window.CONDO = ' + t.slice(open, endIdx + 1) + ';';
 }
 
 module.exports = async (req, res) => {
@@ -51,9 +66,10 @@ module.exports = async (req, res) => {
       `Produce the complete window.CONDO file per your rules. Pull live ${area} room-rental comps. Output ONLY the JavaScript.` });
 
     let messages = [{ role: 'user', content }];
+    let acc = '';                 // accumulated text across continuation turns
     let finalText = null;
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 14; i++) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -71,13 +87,24 @@ module.exports = async (req, res) => {
       });
       const data = await r.json();
       if (data.type === 'error' || data.error) return res.status(502).json({ error: data.error || data });
-      if (data.stop_reason === 'pause_turn') { messages.push({ role: 'assistant', content: data.content }); continue; }
-      finalText = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+      const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+
+      if (data.stop_reason === 'pause_turn') {           // web search in progress
+        messages.push({ role: 'assistant', content: data.content });
+        continue;
+      }
+      if (data.stop_reason === 'max_tokens') {            // output truncated — ask it to continue
+        acc += text;
+        messages.push({ role: 'assistant', content: data.content });
+        messages.push({ role: 'user', content: 'Continue the JavaScript exactly where you left off. Do not repeat anything already written and do not add any explanation — output only the remaining code.' });
+        continue;
+      }
+      finalText = acc + text;                            // end_turn / stop_sequence
       break;
     }
 
     const condoData = extractCondo(finalText);
-    if (!condoData) return res.status(502).json({ error: 'Could not parse condo-data from model output', raw: finalText });
+    if (!condoData) return res.status(502).json({ error: 'Could not parse condo-data from model output', raw: (finalText || '').slice(-1200) });
 
     return res.status(200).json({ slug: slugify(name), condoData });
   } catch (e) {
