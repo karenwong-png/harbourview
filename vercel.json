@@ -6,7 +6,8 @@
     "api/publish.js": { "maxDuration": 60 }
   },
   "rewrites": [
-    { "source": "/((?!js/|css/|data/|vendor/|api/|admin|favicon|.*\\.).*)", "destination": "/index.html" }
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/((?!js/|css/|data/|vendor/|api/|admin|.*\\.).*)", "destination": "/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
