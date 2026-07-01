@@ -459,6 +459,58 @@
   function setText(sel, val) { var e = dq(sel); if (e && val != null) e.textContent = val; }
   function setHTML(sel, html) { var e = dq(sel); if (e && html != null) e.innerHTML = html; }
 
+  function renderTemplate() {
+    var t = (CONDO.template === 'developer') ? 'developer' : 'owner';
+    document.body.setAttribute('data-template', t);
+    // CTA label swap (optional, data-driven)
+    if (CONDO.cta && CONDO.cta.label) {
+      [].forEach.call(document.querySelectorAll('[data-cta-label]'), function (el) { el.textContent = CONDO.cta.label; });
+    }
+    renderPartnership();
+    if (t === 'developer') renderDevEconomics();
+  }
+  function renderPartnership() {
+    var P = CONDO.partnerModel; var host = dq('#partnership-grid');
+    if (!host) return;
+    if (!P || !P.items) { return; }
+    setText('#partner-eyebrow', P.eyebrow);
+    setText('#partner-title', P.title);
+    setText('#partner-lead', P.lead);
+    host.innerHTML = P.items.map(function (it) {
+      return '<div class="partner-card"><div class="partner-ico">' + (it.icon || '◆') + '</div>' +
+             '<h3>' + it.head + '</h3><p>' + it.body + '</p></div>';
+    }).join('');
+  }
+  function renderDevEconomics() {
+    var host = dq('#dev-econ-grid'); if (!host) return;
+    var R = CONDO.roi; if (!R || !R.types) return;
+    var key = R.defaultType || Object.keys(R.types)[0];
+    var t = R.types[key]; if (!t) return;
+    function sum(arr) { return (arr || []).reduce(function (a, x) { return [a[0] + (x.lo || 0), a[1] + (x.hi || 0)]; }, [0, 0]); }
+    function f(n) { return Number(n || 0).toLocaleString('en-US'); }
+    var rooms = sum(t.rooms);
+    var parking = sum((t.extras || []).filter(function (e) { return e.id === 'parking'; }));
+    var part = sum((t.extras || []).filter(function (e) { return e.id !== 'parking'; }));
+    var whole = [t.wholeLo || 0, t.wholeHi || 0];
+    var co = [rooms[0] + parking[0], rooms[1] + parking[1]];
+    var opt = [co[0] + part[0], co[1] + part[1]];
+    var price = t.defaultPrice || 0;
+    function yld(m) { return price ? (m * 12 / price * 100).toFixed(1) : null; }
+    var scen = [
+      { name: 'Whole Unit', m: whole, note: 'Rented as-is' },
+      { name: 'Co-Living', m: co, note: 'Room-by-room + parking' },
+      { name: 'Optimized', m: opt, note: '+ partition room', hot: true }
+    ];
+    host.innerHTML = scen.map(function (s) {
+      var yl = price ? (' · ' + yld(s.m[0]) + '–' + yld(s.m[1]) + '% gross') : '';
+      return '<div class="econ-card' + (s.hot ? ' econ-hot' : '') + '">' +
+        '<div class="econ-name">' + s.name + '</div>' +
+        '<div class="econ-amt">RM ' + f(s.m[0]) + ' – ' + f(s.m[1]) + '<span>/mo</span></div>' +
+        '<div class="econ-note">' + s.note + yl + '</div></div>';
+    }).join('');
+    setText('#dev-econ-type', 'Based on Type ' + key + (t.spec ? ' · ' + t.spec : ''));
+  }
+
   function renderMeta() {
     if (!CONDO.meta) return;
     if (CONDO.meta.title) document.title = CONDO.meta.title;
@@ -521,6 +573,7 @@
 
   // ============ Init on DOM ready ============
   function initAll() {
+    renderTemplate();
     renderMeta();
     renderHero();
     renderSuitability();
