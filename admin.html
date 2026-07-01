@@ -129,6 +129,46 @@
     min-height:0; white-space:pre-wrap; background:#fff; resize:vertical;
   }
 
+  /* Unit-type builder */
+  .units{ border:1px solid var(--line-strong); border-radius:16px; padding:6px; background:#FBFBFC; }
+  .units-head{ display:grid; grid-template-columns:1.1fr 1.3fr 1.15fr 1.1fr 32px; gap:10px;
+    padding:8px 10px 4px; font-size:.7rem; font-weight:600; letter-spacing:.02em; color:var(--mut); text-transform:uppercase; }
+  .urow{ display:grid; grid-template-columns:1.1fr 1.3fr 1.15fr 1.1fr 32px; gap:10px; align-items:center;
+    padding:7px 10px; border-radius:12px; }
+  .urow + .urow{ margin-top:2px; }
+  .urow:hover{ background:#fff; }
+  .urow input{ background:#fff; }
+  /* money input with RM / suffix adornments */
+  .money{ display:flex; align-items:center; border:1px solid var(--line-strong); border-radius:11px; background:#fff; overflow:hidden; }
+  .money:focus-within{ border-color:var(--orange); box-shadow:0 0 0 4px rgba(245,131,60,.14); }
+  .money .pre,.money .suf{ font-size:.8rem; color:var(--mut); padding:0 8px; white-space:nowrap; }
+  .money input{ border:0; box-shadow:none !important; padding:9px 4px; border-radius:0; min-width:0; }
+  .money input:focus{ box-shadow:none; }
+  /* bays stepper */
+  .stepper{ display:flex; align-items:center; border:1px solid var(--line-strong); border-radius:11px; background:#fff; overflow:hidden; }
+  .stepper:focus-within{ border-color:var(--orange); box-shadow:0 0 0 4px rgba(245,131,60,.14); }
+  .stepper button{ flex:0 0 auto; width:30px; height:38px; border:0; background:#F1EFEC; color:var(--ink);
+    font-size:1.1rem; font-weight:600; cursor:pointer; line-height:1; transition:.15s var(--ease); }
+  .stepper button:hover{ background:var(--orange); color:#fff; }
+  .stepper input{ border:0; box-shadow:none !important; text-align:center; padding:9px 2px; width:100%; min-width:0;
+    -moz-appearance:textfield; }
+  .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .u-del{ width:30px; height:30px; border-radius:50%; border:1px solid var(--line-strong); background:#fff;
+    color:var(--mut); font-size:1rem; line-height:1; cursor:pointer; transition:.15s var(--ease); }
+  .u-del:hover{ border-color:#D14343; color:#D14343; background:#fff5f5; }
+  .add-type{ display:inline-flex; align-items:center; gap:6px; margin:6px 4px 4px; padding:9px 15px;
+    font:inherit; font-size:.85rem; font-weight:600; color:var(--orange-deep); cursor:pointer;
+    background:#fff; border:1px dashed var(--orange); border-radius:99px; transition:.18s var(--ease); }
+  .add-type:hover{ background:var(--yellow); }
+  .urow .u-name{ font-weight:600; }
+  @media (max-width:640px){
+    .units-head{ display:none; }
+    .urow{ grid-template-columns:1fr 1fr; gap:8px; padding:12px; border:1px solid var(--line); margin-bottom:8px; background:#fff; }
+    .urow .u-name{ grid-column:1 / -1; }
+    .urow .u-del{ position:absolute; }
+    .urow .u-delwrap{ grid-column:1 / -1; display:flex; justify-content:flex-end; }
+  }
+
   .row{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin-bottom:22px; align-items:start; }
 
   /* Buttons */
@@ -268,20 +308,16 @@
         <p class="help">The area or town, and the state.</p>
       </div>
     </div>
-    <div class="row">
-      <div class="field">
-        <label>How much does a unit sell for? <span class="opt">— optional</span></label>
-        <textarea id="prices" class="lines" rows="4" placeholder="Type A  RM495,000
-Type B  RM505,000
-Type C  RM520,000"></textarea>
-        <p class="help"><b>One unit type per line</b> — just press Enter for each new one. Got lots of types? No problem, keep adding lines. Only one price? A single line is fine.</p>
+    <div class="field">
+      <label>Unit types — price &amp; parking <span class="opt">— optional</span></label>
+      <div class="units">
+        <div class="units-head">
+          <span>Unit type</span><span>Selling price</span><span>Parking bays</span><span>Parking fee</span><span></span>
+        </div>
+        <div id="unitRows"></div>
+        <button type="button" class="add-type" id="addType">＋ Add unit type</button>
       </div>
-      <div class="field">
-        <label>Parking <span class="opt">— optional</span></label>
-        <textarea id="parking" class="lines" rows="4" placeholder="Type A  1 bay @ RM100
-Type B  2 bays @ RM100"></textarea>
-        <p class="help">How many bays, and the monthly fee if any. <b>Different per unit type?</b> Put one per line, like the prices. Same for every unit? Just one line is fine.</p>
-      </div>
+      <p class="help">Add a row for each unit type, then <b>type or use the arrows</b> to set the numbers. Same for every unit? Just one row is fine. Leave any box blank if you're not sure.</p>
     </div>
     <div class="field">
       <label>Got a brochure? <span class="opt">— optional</span></label>
@@ -402,6 +438,51 @@ async function readJson(r){
   }
 }
 
+/* ---- Unit-type builder (price + parking per type) ---- */
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function fmtRM(v){ const n=String(v).replace(/[^0-9]/g,''); return n ? Number(n).toLocaleString('en-US') : ''; }
+function addUnitRow(name){
+  const rows = $('unitRows');
+  const idx = rows.children.length;
+  const el = document.createElement('div');
+  el.className = 'urow';
+  el.innerHTML =
+    '<input class="u-name" placeholder="Type '+(LETTERS[idx]||(idx+1))+'" value="'+(name||('Type '+(LETTERS[idx]||(idx+1))))+'" />'
+    + '<div class="money"><span class="pre">RM</span><input class="u-price" type="text" inputmode="numeric" placeholder="495,000" /></div>'
+    + '<div class="stepper"><button type="button" data-d="-1" aria-label="fewer bays">−</button>'
+      + '<input class="u-bays" type="number" min="0" max="20" step="1" placeholder="0" /><button type="button" data-d="1" aria-label="more bays">＋</button></div>'
+    + '<div class="money"><span class="pre">RM</span><input class="u-fee" type="number" min="0" step="10" placeholder="0" /><span class="suf">/mo</span></div>'
+    + '<button type="button" class="u-del" title="Remove this type">×</button>';
+  el.querySelector('.u-price').addEventListener('input', e=>{ const p=e.target.selectionStart; e.target.value=fmtRM(e.target.value); });
+  el.querySelectorAll('.stepper button').forEach(b=> b.addEventListener('click', ()=>{
+    const inp = el.querySelector('.u-bays'); const cur = parseInt(inp.value||'0',10)||0;
+    inp.value = Math.max(0, Math.min(20, cur + (+b.dataset.d)));
+  }));
+  el.querySelector('.u-del').addEventListener('click', ()=>{
+    if($('unitRows').children.length<=1){ el.querySelectorAll('input').forEach(i=>i.value=''); return; }
+    el.remove();
+  });
+  rows.appendChild(el);
+}
+function collectUnits(){
+  return Array.from($('unitRows').children).map(r=>({
+    name:(r.querySelector('.u-name').value||'').trim(),
+    price:(r.querySelector('.u-price').value||'').replace(/[^0-9]/g,''),
+    bays:(r.querySelector('.u-bays').value||'').trim(),
+    fee:(r.querySelector('.u-fee').value||'').trim(),
+  }));
+}
+function buildPrices(){
+  return collectUnits().filter(u=>u.price).map(u=> (u.name?u.name+': ':'')+'RM'+Number(u.price).toLocaleString('en-US')).join('; ');
+}
+function buildParking(){
+  return collectUnits().filter(u=>u.bays!=='' || u.fee).map(u=>{
+    const bays = u.bays!=='' ? (u.bays+' bay'+(u.bays==='1'?'':'s')) : 'parking';
+    const fee = u.fee ? ' @ RM'+Number(u.fee).toLocaleString('en-US')+'/mo' : '';
+    return (u.name?u.name+': ':'')+bays+fee;
+  }).join('; ');
+}
+
 async function generate(){
   if(!pw()) return alert('Enter the team password.');
   if(!$('name').value || !$('area').value) return alert('Name and area are required.');
@@ -409,7 +490,7 @@ async function generate(){
   try{
     const fp = [];
     for(const f of $('floorplans').files){ fp.push(await compressImage(f)); }
-    const body = { name:$('name').value, area:$('area').value, prices:$('prices').value, parking:$('parking').value, floorplans:fp };
+    const body = { name:$('name').value, area:$('area').value, prices:buildPrices(), parking:buildParking(), floorplans:fp };
     if($('infopack').files[0]) body.infopackBase64 = await fileToB64($('infopack').files[0]);
     const payload = JSON.stringify(body);
     // Vercel caps the request body at ~4.5 MB; keep a safety margin.
@@ -488,6 +569,8 @@ $('tplOwner').addEventListener('click', ()=>applyTemplate('owner'));
 $('tplDev').addEventListener('click', ()=>applyTemplate('developer'));
 $('reChoose').addEventListener('click', ()=>{ $('reviewCard').classList.add('hidden'); $('choiceCard').scrollIntoView({behavior:'smooth'}); });
 $('pubBtn').addEventListener('click', publish);
+$('addType').addEventListener('click', ()=>addUnitRow());
+addUnitRow(); addUnitRow();   // start with Type A and Type B
 $('pw').focus();
 </script>
 </body></html>
