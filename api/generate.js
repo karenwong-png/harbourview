@@ -1,6 +1,6 @@
 /**
  * POST /api/generate
- * Body (JSON): { name, area, prices, parking, infopackBase64?, floorplans?: [{mediaType,data}] }
+ * Body (JSON): { name, area, prices, parking, infopackBase64?, infopackImages?: [{mediaType,data}], floorplans?: [{mediaType,data}] }
  * Header: x-admin-password
  * Returns: { slug, condoData }  — the generated /data/<slug>.js content (window.CONDO = {...})
  *
@@ -31,11 +31,16 @@ module.exports = async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
 
   try {
-    const { name, area, prices, parking, infopackBase64, floorplans } = req.body || {};
+    const { name, area, prices, parking, infopackBase64, infopackImages, floorplans } = req.body || {};
     if (!name || !area) return res.status(400).json({ error: 'name and area are required' });
 
     const content = [];
-    if (infopackBase64) {
+    if (infopackImages && infopackImages.length) {
+      // Brochure rasterised to page images client-side (keeps the upload small).
+      infopackImages.forEach((im) => {
+        content.push({ type: 'image', source: { type: 'base64', media_type: im.mediaType || 'image/jpeg', data: im.data } });
+      });
+    } else if (infopackBase64) {
       content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: infopackBase64 } });
     }
     (floorplans || []).forEach((f) => {
