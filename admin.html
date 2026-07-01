@@ -102,11 +102,14 @@
     outline:none; border-color:var(--orange);
     box-shadow:0 0 0 4px rgba(245,131,60,.14);
   }
-  input[type=file]{ padding:10px 12px; font-size:.85rem; color:var(--mut); cursor:pointer; }
+  input[type=file]{
+    display:flex; align-items:center; padding:8px 12px; min-height:48px;
+    font-size:.85rem; color:var(--mut); cursor:pointer;
+  }
   input[type=file]::file-selector-button{
-    font:inherit; font-size:.82rem; font-weight:500; margin-right:12px; cursor:pointer;
-    padding:7px 14px; border-radius:9px; border:1px solid var(--line-strong);
-    background:var(--bg); color:var(--ink); transition:.2s var(--ease);
+    font:inherit; font-size:.82rem; font-weight:500; margin-right:14px; cursor:pointer;
+    padding:8px 16px; border-radius:10px; border:1px solid var(--line-strong);
+    background:var(--bg); color:var(--ink); transition:.2s var(--ease); white-space:nowrap;
   }
   input[type=file]::file-selector-button:hover{ background:#fff; border-color:var(--orange); color:var(--orange-deep); }
   textarea{
