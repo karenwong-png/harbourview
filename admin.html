@@ -52,7 +52,7 @@
 
   h1{ font-size:2.55rem; line-height:1.08; letter-spacing:-.03em; font-weight:700; margin:0 0 12px; }
   h1 .accent{ background:linear-gradient(120deg,var(--orange),var(--teal)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-  .sub{ color:var(--mut); font-size:1.06rem; font-weight:400; margin:0 0 40px; max-width:56ch; }
+  .sub{ color:var(--mut); font-size:1.06rem; font-weight:400; margin:0 0 40px; }
 
   /* Cards */
   .card{
@@ -131,18 +131,22 @@
 
   /* Unit-type builder */
   .units{ border:1px solid var(--line-strong); border-radius:16px; padding:6px; background:#FBFBFC; }
-  .units-head{ display:grid; grid-template-columns:1.1fr 1.3fr 1.15fr 1.1fr 32px; gap:10px;
+  .units-head{ display:grid; grid-template-columns:0.95fr 1.2fr 1fr 1.2fr 64px; gap:9px;
     padding:8px 10px 4px; font-size:.7rem; font-weight:600; letter-spacing:.02em; color:var(--mut); text-transform:uppercase; }
-  .urow{ display:grid; grid-template-columns:1.1fr 1.3fr 1.15fr 1.1fr 32px; gap:10px; align-items:center;
+  .urow{ display:grid; grid-template-columns:0.95fr 1.2fr 1fr 1.2fr 64px; gap:9px; align-items:center;
     padding:7px 10px; border-radius:12px; }
   .urow + .urow{ margin-top:2px; }
   .urow:hover{ background:#fff; }
   .urow input{ background:#fff; }
+  .ucell{ min-width:0; }
+  .ucell .money,.ucell .stepper{ width:100%; }
+  .ulab{ display:none; }
   /* money input with RM / suffix adornments */
   .money{ display:flex; align-items:center; border:1px solid var(--line-strong); border-radius:11px; background:#fff; overflow:hidden; }
   .money:focus-within{ border-color:var(--orange); box-shadow:0 0 0 4px rgba(245,131,60,.14); }
-  .money .pre,.money .suf{ font-size:.8rem; color:var(--mut); padding:0 8px; white-space:nowrap; }
-  .money input{ border:0; box-shadow:none !important; padding:9px 4px; border-radius:0; min-width:0; }
+  .money .pre{ font-size:.8rem; color:var(--mut); padding:0 4px 0 9px; white-space:nowrap; }
+  .money .suf{ font-size:.8rem; color:var(--mut); padding:0 9px 0 2px; white-space:nowrap; }
+  .money input{ border:0; box-shadow:none !important; padding:9px 2px; border-radius:0; min-width:0; }
   .money input:focus{ box-shadow:none; }
   /* bays stepper */
   .stepper{ display:flex; align-items:center; border:1px solid var(--line-strong); border-radius:11px; background:#fff; overflow:hidden; }
@@ -153,8 +157,11 @@
   .stepper input{ border:0; box-shadow:none !important; text-align:center; padding:9px 2px; width:100%; min-width:0;
     -moz-appearance:textfield; }
   .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
-  .u-del{ width:30px; height:30px; border-radius:50%; border:1px solid var(--line-strong); background:#fff;
+  .u-actions{ display:flex; gap:6px; justify-content:flex-end; }
+  .u-copy,.u-del{ width:30px; height:30px; flex:0 0 auto; display:grid; place-items:center;
+    border-radius:50%; border:1px solid var(--line-strong); background:#fff;
     color:var(--mut); font-size:1rem; line-height:1; cursor:pointer; transition:.15s var(--ease); }
+  .u-copy:hover{ border-color:var(--orange); color:var(--orange-deep); background:var(--yellow); }
   .u-del:hover{ border-color:#D14343; color:#D14343; background:#fff5f5; }
   .add-type{ display:inline-flex; align-items:center; gap:6px; margin:6px 4px 4px; padding:9px 15px;
     font:inherit; font-size:.85rem; font-weight:600; color:var(--orange-deep); cursor:pointer;
@@ -163,10 +170,12 @@
   .urow .u-name{ font-weight:600; }
   @media (max-width:640px){
     .units-head{ display:none; }
-    .urow{ grid-template-columns:1fr 1fr; gap:8px; padding:12px; border:1px solid var(--line); margin-bottom:8px; background:#fff; }
-    .urow .u-name{ grid-column:1 / -1; }
-    .urow .u-del{ position:absolute; }
-    .urow .u-delwrap{ grid-column:1 / -1; display:flex; justify-content:flex-end; }
+    .urow{ grid-template-columns:1fr; gap:12px; padding:14px; border:1px solid var(--line); border-radius:14px; margin-bottom:10px; background:#fff; }
+    .urow:hover{ background:#fff; }
+    .ulab{ display:block; font-size:.68rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--mut); margin-bottom:6px; }
+    .u-actionscell{ display:flex; justify-content:flex-end; }
+    .stepper button{ height:44px; }
+    .money input,.stepper input{ padding-top:11px; padding-bottom:11px; }
   }
 
   .row{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin-bottom:22px; align-items:start; }
@@ -257,12 +266,22 @@
   }
 
   @media (max-width:640px){
-    .wrap{ padding:36px 18px 90px; }
-    h1{ font-size:2rem; }
-    .sub{ font-size:1rem; margin-bottom:30px; }
+    .wrap{ padding:28px 14px 80px; }
+    h1{ font-size:1.9rem; }
+    .sub{ font-size:1rem; margin-bottom:28px; }
+    .card{ padding:20px 16px 22px; border-radius:18px; }
     .row,.choice{ grid-template-columns:1fr; }
-    .summary{ grid-template-columns:1fr 1fr; }
-    .card.pw{ flex-wrap:wrap; }
+    .summary{ grid-template-columns:1fr; }
+    .actions{ gap:10px; }
+    .actions .btn{ width:100%; }
+    /* 16px inputs stop iOS from auto-zooming on focus */
+    input,textarea,.money input,.stepper input{ font-size:16px; }
+    .login-card{ margin-top:5vh; padding:28px 20px 24px; }
+    .masthead{ flex-wrap:wrap; }
+  }
+  @media (max-width:420px){
+    h1{ font-size:1.7rem; }
+    .tpl{ padding:16px; }
   }
 </style></head>
 <body><div class="wrap">
@@ -441,28 +460,47 @@ async function readJson(r){
 /* ---- Unit-type builder (price + parking per type) ---- */
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 function fmtRM(v){ const n=String(v).replace(/[^0-9]/g,''); return n ? Number(n).toLocaleString('en-US') : ''; }
-function addUnitRow(name){
+function addUnitRow(opts){
+  opts = opts || {};
   const rows = $('unitRows');
   const idx = rows.children.length;
+  const defName = 'Type '+(LETTERS[idx]||(idx+1));
   const el = document.createElement('div');
   el.className = 'urow';
   el.innerHTML =
-    '<input class="u-name" placeholder="Type '+(LETTERS[idx]||(idx+1))+'" value="'+(name||('Type '+(LETTERS[idx]||(idx+1))))+'" />'
-    + '<div class="money"><span class="pre">RM</span><input class="u-price" type="text" inputmode="numeric" placeholder="495,000" /></div>'
-    + '<div class="stepper"><button type="button" data-d="-1" aria-label="fewer bays">−</button>'
-      + '<input class="u-bays" type="number" min="0" max="20" step="1" placeholder="0" /><button type="button" data-d="1" aria-label="more bays">＋</button></div>'
-    + '<div class="money"><span class="pre">RM</span><input class="u-fee" type="number" min="0" step="10" placeholder="0" /><span class="suf">/mo</span></div>'
-    + '<button type="button" class="u-del" title="Remove this type">×</button>';
-  el.querySelector('.u-price').addEventListener('input', e=>{ const p=e.target.selectionStart; e.target.value=fmtRM(e.target.value); });
+    '<div class="ucell"><span class="ulab">Unit type</span><input class="u-name" placeholder="'+defName+'" /></div>'
+    + '<div class="ucell"><span class="ulab">Selling price</span><div class="money"><span class="pre">RM</span><input class="u-price" type="text" inputmode="numeric" placeholder="495,000" /></div></div>'
+    + '<div class="ucell"><span class="ulab">Parking bays</span><div class="stepper"><button type="button" data-d="-1" aria-label="fewer bays">−</button>'
+      + '<input class="u-bays" type="number" min="0" max="20" step="1" placeholder="0" /><button type="button" data-d="1" aria-label="more bays">＋</button></div></div>'
+    + '<div class="ucell"><span class="ulab">Parking fee</span><div class="money"><span class="pre">RM</span><input class="u-fee" type="number" min="0" step="10" placeholder="0" /><span class="suf">/mo</span></div></div>'
+    + '<div class="ucell u-actionscell"><div class="u-actions">'
+      + '<button type="button" class="u-copy" title="Duplicate this type"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>'
+      + '<button type="button" class="u-del" title="Remove this type">×</button>'
+    + '</div></div>';
+  const v = opts.values || {};
+  el.querySelector('.u-name').value = v.name != null ? v.name : defName;
+  el.querySelector('.u-price').value = v.price != null ? fmtRM(v.price) : '';
+  el.querySelector('.u-bays').value = v.bays != null ? v.bays : '';
+  el.querySelector('.u-fee').value = v.fee != null ? v.fee : '';
+  el.querySelector('.u-price').addEventListener('input', e=>{ e.target.value=fmtRM(e.target.value); });
   el.querySelectorAll('.stepper button').forEach(b=> b.addEventListener('click', ()=>{
     const inp = el.querySelector('.u-bays'); const cur = parseInt(inp.value||'0',10)||0;
     inp.value = Math.max(0, Math.min(20, cur + (+b.dataset.d)));
   }));
+  el.querySelector('.u-copy').addEventListener('click', ()=>{
+    addUnitRow({ after:el, values:{
+      name:el.querySelector('.u-name').value,
+      price:el.querySelector('.u-price').value,
+      bays:el.querySelector('.u-bays').value,
+      fee:el.querySelector('.u-fee').value,
+    }});
+  });
   el.querySelector('.u-del').addEventListener('click', ()=>{
     if($('unitRows').children.length<=1){ el.querySelectorAll('input').forEach(i=>i.value=''); return; }
     el.remove();
   });
-  rows.appendChild(el);
+  if(opts.after && opts.after.parentNode===rows) opts.after.insertAdjacentElement('afterend', el);
+  else rows.appendChild(el);
 }
 function collectUnits(){
   return Array.from($('unitRows').children).map(r=>({
