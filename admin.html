@@ -2,46 +2,227 @@
 <html lang="en"><head>
 <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BeLive · Add a Condo</title>
+<link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-  :root { --o:#c64a2c; --ink:#1f2937; --mut:#6b7280; --line:#e5e7eb; --bg:#f8f7f5; }
-  * { box-sizing:border-box; } body { font-family:system-ui,Segoe UI,Roboto,sans-serif; margin:0; background:var(--bg); color:var(--ink); }
-  .wrap { max-width:880px; margin:0 auto; padding:28px 18px 80px; }
-  h1 { font-size:1.5rem; margin:0 0 4px; } .sub { color:var(--mut); margin:0 0 24px; }
-  .step { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--o); font-weight:700; margin-bottom:6px; }
-  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:18px; }
-  label { display:block; font-weight:600; font-size:.85rem; margin:12px 0 6px; }
-  input,textarea { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:9px; font:inherit; }
-  textarea { font-family:ui-monospace,Menlo,monospace; font-size:.8rem; min-height:220px; white-space:pre; }
-  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .btn { background:var(--o); color:#fff; border:0; border-radius:10px; padding:12px 18px; font-weight:700; cursor:pointer; font-size:.95rem; }
-  .btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
-  .btn:disabled { opacity:.5; cursor:not-allowed; }
-  .muted { color:var(--mut); font-size:.82rem; }
-  .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
-  .stat { background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
-  .stat b { display:block; font-size:1.05rem; } .stat span { color:var(--mut); font-size:.75rem; }
-  .ok { color:#15803d; } .err { color:#b91c1c; white-space:pre-wrap; }
-  .hidden { display:none; } .spin { color:var(--o); font-weight:600; }
-  a { color:var(--o); }
-  .choice { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px; }
-  .tpl { text-align:left; border:2px solid var(--line); border-radius:14px; padding:16px; background:#fff; cursor:pointer; transition:.15s; }
-  .tpl:hover { border-color:var(--o); }
-  .tpl.active { border-color:var(--o); background:#fff7f4; }
-  .tpl h4 { margin:0 0 4px; font-size:1rem; } .tpl p { margin:0; color:var(--mut); font-size:.82rem; line-height:1.45; }
-  .pill { display:inline-block; background:var(--o); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:99px; margin-left:6px; }
+  :root{
+    /* BeLive brand palette */
+    --orange:#F5833C;      /* Pantone 1575 C */
+    --orange-deep:#E86E22;
+    --teal:#2BBCB4;        /* Pantone 3252 C */
+    --teal-deep:#1FA79F;
+    --grey:#94A1A6;        /* Pantone 429 C */
+    --yellow:#FFF4E0;      /* Pantone 7401 C */
+
+    --ink:#1D1D1F;
+    --ink-soft:#3A3C40;
+    --mut:#7A828A;
+    --line:rgba(20,22,26,.09);
+    --line-strong:rgba(20,22,26,.14);
+    --card:#FFFFFF;
+    --bg:#F5F5F7;
+    --shadow-sm:0 1px 2px rgba(20,22,26,.04), 0 4px 14px rgba(20,22,26,.05);
+    --shadow-md:0 4px 12px rgba(20,22,26,.06), 0 18px 44px rgba(20,22,26,.09);
+    --radius:22px;
+    --radius-sm:14px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  body{
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    margin:0; color:var(--ink); line-height:1.5;
+    background:
+      radial-gradient(1100px 620px at 15% -8%, rgba(245,131,60,.10), transparent 60%),
+      radial-gradient(980px 560px at 92% 4%, rgba(43,188,180,.10), transparent 58%),
+      var(--bg);
+    min-height:100vh;
+  }
+
+  .wrap{ max-width:760px; margin:0 auto; padding:56px 22px 120px; }
+
+  /* Header */
+  .masthead{ display:flex; align-items:center; gap:12px; margin-bottom:34px; }
+  .masthead img{ height:30px; width:auto; }
+  .masthead .dot{ width:5px; height:5px; border-radius:50%; background:var(--grey); }
+  .masthead .kicker{ font-size:.82rem; font-weight:500; color:var(--mut); letter-spacing:.01em; }
+
+  h1{ font-size:2.55rem; line-height:1.08; letter-spacing:-.03em; font-weight:700; margin:0 0 12px; }
+  h1 .accent{ background:linear-gradient(120deg,var(--orange),var(--teal)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .sub{ color:var(--mut); font-size:1.06rem; font-weight:400; margin:0 0 40px; max-width:56ch; }
+
+  /* Cards */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px 26px 28px;
+    margin-bottom:20px;
+    box-shadow:var(--shadow-sm);
+    transition:box-shadow .35s var(--ease), transform .35s var(--ease), opacity .45s var(--ease);
+  }
+  .card:hover{ box-shadow:var(--shadow-md); }
+
+  .card.reveal{ animation:rise .5s var(--ease) both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+
+  /* Password card — compact */
+  .card.pw{ display:flex; align-items:center; gap:16px; padding:16px 20px; }
+  .card.pw .lockicon{ flex:0 0 auto; width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+    background:linear-gradient(150deg,rgba(245,131,60,.16),rgba(43,188,180,.16)); }
+  .card.pw label{ margin:0; }
+  .card.pw .pw-field{ flex:1; }
+
+  .step{
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--orange-deep);
+    font-weight:600; margin-bottom:16px;
+  }
+  .step .n{
+    width:22px; height:22px; border-radius:50%; display:grid; place-items:center;
+    background:var(--orange); color:#fff; font-size:.72rem; font-weight:700; letter-spacing:0;
+  }
+  .step .txt{ color:var(--ink); text-transform:none; letter-spacing:-.01em; font-size:.98rem; font-weight:600; }
+
+  label{ display:block; font-weight:500; font-size:.82rem; color:var(--ink-soft); margin:16px 0 7px; }
+  label:first-of-type{ margin-top:0; }
+
+  input,textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line-strong);
+    border-radius:12px; font:inherit; font-size:.92rem; color:var(--ink);
+    background:#fff; transition:border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+    -webkit-appearance:none; appearance:none;
+  }
+  input::placeholder,textarea::placeholder{ color:#AEB4BA; }
+  input:hover,textarea:hover{ border-color:var(--grey); }
+  input:focus,textarea:focus{
+    outline:none; border-color:var(--orange);
+    box-shadow:0 0 0 4px rgba(245,131,60,.14);
+  }
+  input[type=file]{ padding:10px 12px; font-size:.85rem; color:var(--mut); cursor:pointer; }
+  input[type=file]::file-selector-button{
+    font:inherit; font-size:.82rem; font-weight:500; margin-right:12px; cursor:pointer;
+    padding:7px 14px; border-radius:9px; border:1px solid var(--line-strong);
+    background:var(--bg); color:var(--ink); transition:.2s var(--ease);
+  }
+  input[type=file]::file-selector-button:hover{ background:#fff; border-color:var(--orange); color:var(--orange-deep); }
+  textarea{
+    font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:.78rem; line-height:1.55;
+    min-height:230px; white-space:pre; background:#FBFBFC;
+  }
+
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  /* Buttons */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--orange); color:#fff; border:0; border-radius:980px;
+    padding:12px 24px; font:inherit; font-weight:600; font-size:.92rem; cursor:pointer;
+    letter-spacing:.005em; box-shadow:0 2px 10px rgba(245,131,60,.28);
+    transition:transform .18s var(--ease), box-shadow .25s var(--ease), background .2s var(--ease);
+  }
+  .btn:hover{ background:var(--orange-deep); transform:translateY(-1px); box-shadow:0 6px 18px rgba(245,131,60,.34); }
+  .btn:active{ transform:translateY(0) scale(.985); }
+  .btn.ghost{ background:#fff; color:var(--ink); border:1px solid var(--line-strong); box-shadow:none; }
+  .btn.ghost:hover{ background:var(--bg); border-color:var(--grey); color:var(--ink); }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  .actions{ margin-top:22px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+
+  .muted{ color:var(--mut); font-size:.82rem; line-height:1.5; }
+  .hint{ color:var(--mut); font-size:.8rem; margin:12px 0 0; }
+
+  .ok{ color:var(--teal-deep); font-weight:500; }
+  .err{ color:#D14343; white-space:pre-wrap; font-weight:500; }
+  .hidden{ display:none; }
+
+  /* Spinner */
+  .spin{ display:inline-flex; align-items:center; gap:9px; color:var(--orange-deep); font-weight:500; font-size:.84rem; }
+  .spin::before{
+    content:""; width:15px; height:15px; border-radius:50%;
+    border:2px solid rgba(245,131,60,.28); border-top-color:var(--orange);
+    animation:spin .7s linear infinite; flex:0 0 auto;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* Summary stats */
+  .summary{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:6px 0 20px; }
+  .stat{
+    background:linear-gradient(180deg,#fff,var(--yellow));
+    border:1px solid var(--line); border-radius:var(--radius-sm);
+    padding:14px 15px; transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .stat:hover{ transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+  .stat b{ display:block; font-size:1.12rem; font-weight:600; letter-spacing:-.01em; line-height:1.2; }
+  .stat span{ display:block; color:var(--mut); font-size:.72rem; margin-top:3px; font-weight:400; }
+
+  a{ color:var(--orange-deep); text-decoration:none; font-weight:500; }
+  a:hover{ text-decoration:underline; }
+  code{ font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:.85em; background:var(--bg);
+    padding:2px 7px; border-radius:6px; border:1px solid var(--line); }
+
+  /* Template chooser */
+  .choice{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
+  .tpl{
+    position:relative; text-align:left; border:1.5px solid var(--line-strong);
+    border-radius:18px; padding:20px; background:#fff; cursor:pointer; overflow:hidden;
+    transition:border-color .22s var(--ease), transform .22s var(--ease), box-shadow .22s var(--ease);
+  }
+  .tpl::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background:linear-gradient(150deg,rgba(245,131,60,.05),rgba(43,188,180,.05)); opacity:0; transition:opacity .22s var(--ease); }
+  .tpl:hover{ border-color:var(--orange); transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .tpl.active{ border-color:var(--orange); }
+  .tpl.active::after{ opacity:1; }
+  .tpl.active::before{
+    content:"✓"; position:absolute; top:14px; right:14px; width:24px; height:24px; border-radius:50%;
+    background:var(--orange); color:#fff; font-size:.8rem; font-weight:700; display:grid; place-items:center;
+  }
+  .tpl .tag{ display:inline-block; font-size:.66rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--teal-deep); background:rgba(43,188,180,.12); padding:3px 9px; border-radius:99px; margin-bottom:10px; }
+  .tpl h4{ margin:0 0 6px; font-size:1.08rem; font-weight:600; letter-spacing:-.01em; }
+  .tpl p{ margin:0; color:var(--mut); font-size:.83rem; line-height:1.5; }
+
+  .pill{
+    display:inline-flex; align-items:center; background:linear-gradient(120deg,var(--orange),var(--orange-deep));
+    color:#fff; font-size:.68rem; font-weight:600; letter-spacing:.02em; padding:3px 11px; border-radius:99px; margin-left:8px;
+    vertical-align:middle; box-shadow:0 2px 6px rgba(245,131,60,.3);
+  }
+
+  @media (max-width:640px){
+    .wrap{ padding:36px 18px 90px; }
+    h1{ font-size:2rem; }
+    .sub{ font-size:1rem; margin-bottom:30px; }
+    .row,.choice{ grid-template-columns:1fr; }
+    .summary{ grid-template-columns:1fr 1fr; }
+    .card.pw{ flex-wrap:wrap; }
+  }
 </style></head>
 <body><div class="wrap">
-  <h1>Add a Condo</h1>
-  <p class="sub">Generate the condo data → choose a template → publish the page. Nothing goes live until you merge the preview PR.</p>
+  <div class="masthead">
+    <img src="/hblogo.png" alt="BeLive" onerror="this.style.display='none'" />
+    <span class="dot"></span>
+    <span class="kicker">Admin Console</span>
+  </div>
 
-  <div class="card">
-    <label>Team password</label>
-    <input id="pw" type="password" placeholder="ask your admin" autocomplete="off" />
+  <h1>Add a <span class="accent">Condo</span></h1>
+  <p class="sub">Generate the condo data, choose a template, and publish the page. Nothing goes live until you merge the preview PR.</p>
+
+  <div class="card pw">
+    <div class="lockicon" aria-hidden="true">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E86E22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="pw-field">
+      <label for="pw">Team password</label>
+      <input id="pw" type="password" placeholder="ask your admin" autocomplete="off" />
+    </div>
   </div>
 
   <!-- STEP 1 -->
   <div class="card">
-    <div class="step">Step 1 · Generate data</div>
+    <div class="step"><span class="n">1</span><span class="txt">Generate data</span></div>
     <div class="row">
       <div><label>Condo name</label><input id="name" placeholder="e.g. Sky Residence" /></div>
       <div><label>Area / place</label><input id="area" placeholder="e.g. Bayan Lepas, Penang" /></div>
@@ -52,20 +233,22 @@
     </div>
     <label>BD Infopack (PDF, optional)</label><input id="infopack" type="file" accept="application/pdf" />
     <label>Floor plan images (select several)</label><input id="floorplans" type="file" accept="image/*" multiple />
-    <p class="muted">Keep total upload under ~4 MB. Generating reads the plans + pulls live comps (30–90s).</p>
-    <div style="margin-top:14px"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
+    <p class="hint">Keep total upload under ~4 MB. Generating reads the plans + pulls live comps (30–90s).</p>
+    <div class="actions"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
   </div>
 
   <!-- STEP 2 -->
   <div class="card hidden" id="choiceCard">
-    <div class="step">Step 2 · Choose a template</div>
-    <p class="muted" style="margin-top:0">Same facts and numbers — different audience. Pick who this page is for.</p>
+    <div class="step"><span class="n">2</span><span class="txt">Choose a template</span></div>
+    <p class="muted" style="margin:-6px 0 18px">Same facts and numbers — different audience. Pick who this page is for.</p>
     <div class="choice">
       <div class="tpl" id="tplOwner" data-kind="owner">
+        <span class="tag">Investor</span>
         <h4>Owner</h4>
         <p>For an individual unit owner/investor. ROI calculator, pricing, “convert your unit”, hassle-free framing.</p>
       </div>
       <div class="tpl" id="tplDev" data-kind="developer">
+        <span class="tag">Partnership</span>
         <h4>Developer</h4>
         <p>For the developer/landowner. Partnership model + per-unit economics as a buyer sales tool. Calculator hidden.</p>
       </div>
@@ -74,17 +257,17 @@
 
   <!-- STEP 3 -->
   <div class="card hidden" id="reviewCard">
-    <div class="step">Step 3 · Review &amp; publish <span class="pill" id="chosenLabel">Owner</span></div>
-    <p class="muted" style="margin-top:0">Page will publish at <code id="slugPreview"></code>. Eyeball the numbers, edit the file if needed, then publish.</p>
+    <div class="step"><span class="n">3</span><span class="txt">Review &amp; publish</span> <span class="pill" id="chosenLabel">Owner</span></div>
+    <p class="muted" style="margin:-6px 0 18px">Page will publish at <code id="slugPreview"></code>. Eyeball the numbers, edit the file if needed, then publish.</p>
     <div class="summary" id="summary"></div>
     <label>condo-data.js (editable)</label>
     <textarea id="condoData" spellcheck="false"></textarea>
-    <div style="margin-top:14px">
+    <div class="actions">
       <button class="btn" id="pubBtn">Publish page to preview</button>
       <button class="btn ghost" id="reChoose" type="button">← Change template</button>
       <span id="pubState" class="muted"></span>
     </div>
-    <div id="pubResult" class="muted" style="margin-top:12px"></div>
+    <div id="pubResult" class="muted" style="margin-top:14px"></div>
   </div>
 </div>
 
@@ -112,7 +295,7 @@ async function generate(){
     BASE = parseCondo(data.condoData); BASE_SLUG = data.slug;
     if(!BASE) throw new Error('Generated data could not be parsed.');
     $('genState').innerHTML='<span class="ok">Done — now choose a template.</span>';
-    $('choiceCard').classList.remove('hidden');
+    $('choiceCard').classList.remove('hidden'); $('choiceCard').classList.add('reveal');
     $('reviewCard').classList.add('hidden');
     $('choiceCard').scrollIntoView({behavior:'smooth'});
   }catch(e){ $('genState').innerHTML='<span class="err">'+e.message+'</span>'; }
@@ -135,7 +318,7 @@ function applyTemplate(kind){
   $('slugPreview').textContent = '/'+slug;
   $('tplOwner').classList.toggle('active', kind==='owner');
   $('tplDev').classList.toggle('active', kind==='developer');
-  $('reviewCard').classList.remove('hidden');
+  $('reviewCard').classList.remove('hidden'); $('reviewCard').classList.add('reveal');
   $('pubState').innerHTML=''; $('pubResult').innerHTML='';
   $('reviewCard').scrollIntoView({behavior:'smooth'});
 }
@@ -150,7 +333,7 @@ function renderSummary(js){
     const part=(d.extras||[]).filter(e=>e.id!=='parking').reduce((a,r)=>[a[0]+(r.lo||0),a[1]+(r.hi||0)],[0,0]);
     const opt=[rooms[0]+park[0]+part[0], rooms[1]+park[1]+part[1]];
     roi+=`<div class="stat"><b>RM ${opt[0]}–${opt[1]}</b><span>${k} Optimized / mo</span></div>`; }
-  box.innerHTML = `<div class="stat"><b>${c.name||'—'} <span style="color:var(--o)">(${c.template||'owner'})</span></b><span>condo · template</span></div>` + chips + roi;
+  box.innerHTML = `<div class="stat"><b>${c.name||'—'} <span style="color:var(--orange-deep)">(${c.template||'owner'})</span></b><span>condo · template</span></div>` + chips + roi;
 }
 $('condoData').addEventListener('input', e=>renderSummary(e.target.value));
 
