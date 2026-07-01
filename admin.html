@@ -87,8 +87,7 @@
   }
   .step .txt{ color:var(--ink); text-transform:none; letter-spacing:-.01em; font-size:.98rem; font-weight:600; }
 
-  label{ display:block; font-weight:500; font-size:.82rem; color:var(--ink-soft); margin:16px 0 7px; }
-  label:first-of-type{ margin-top:0; }
+  label{ display:block; font-weight:600; font-size:.86rem; color:var(--ink); margin:0 0 8px; }
 
   input,textarea{
     width:100%; padding:12px 14px; border:1px solid var(--line-strong);
@@ -117,7 +116,7 @@
     min-height:230px; white-space:pre; background:#FBFBFC;
   }
 
-  .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin-bottom:22px; }
 
   /* Buttons */
   .btn{
@@ -140,9 +139,11 @@
 
   /* Friendly per-field helper text */
   label .opt{ font-weight:400; color:var(--grey); font-size:.9em; }
-  .help{ color:var(--mut); font-size:.78rem; line-height:1.45; margin:6px 0 0; }
+  .help{ color:var(--mut); font-size:.78rem; line-height:1.45; margin:8px 0 0; }
   .help b{ color:var(--ink-soft); font-weight:500; }
-  .field{ margin-bottom:4px; }
+  .field{ margin:0 0 22px; }
+  .field:last-child{ margin-bottom:0; }
+  .row .field{ margin-bottom:0; }
   .lead{ color:var(--ink-soft); font-size:.92rem; line-height:1.55; margin:-4px 0 20px; }
   .lead b{ font-weight:600; }
 
@@ -259,12 +260,16 @@
         <p class="help">How many bays, and the monthly fee if there is one.</p>
       </div>
     </div>
-    <label>Got a brochure? <span class="opt">— optional</span></label>
-    <input id="infopack" type="file" accept="application/pdf" />
-    <p class="help">A PDF info pack helps us fill in the details. No brochure? Just skip this.</p>
-    <label>Floor plan pictures</label>
-    <input id="floorplans" type="file" accept="image/*" multiple />
-    <p class="help">Photos or screenshots of the floor plans. You can pick more than one — hold <b>Ctrl</b> (or <b>⌘</b> on Mac) while choosing.</p>
+    <div class="field">
+      <label>Got a brochure? <span class="opt">— optional</span></label>
+      <input id="infopack" type="file" accept="application/pdf" />
+      <p class="help">A PDF info pack helps us fill in the details. No brochure? Just skip this.</p>
+    </div>
+    <div class="field">
+      <label>Floor plan pictures</label>
+      <input id="floorplans" type="file" accept="image/*" multiple />
+      <p class="help">Photos or screenshots of the floor plans. You can pick more than one — hold <b>Ctrl</b> (or <b>⌘</b> on Mac) while choosing.</p>
+    </div>
     <p class="hint">Tip: keep all the files together under ~4 MB. When you click the button, it reads the plans and checks live prices nearby — this takes about 30–90 seconds, so give it a moment.</p>
     <div class="actions"><button class="btn" id="genBtn">Generate condo data</button> <span id="genState" class="muted"></span></div>
   </div>
