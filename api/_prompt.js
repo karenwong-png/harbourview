@@ -19,6 +19,7 @@ OUTPUT FORMAT (critical)
 - Follow this shape exactly (fill every section):
 
 window.CONDO = {
+  template: "owner",
   name: "", shortName: "", developer: "", partnership: "",
   assets: { favicon:"/favicon.png", heroRender:"", developerLogo:"", condoLogo:"" },
   meta: { title:"", description:"", themeColor:"#c64a2c" },
@@ -30,5 +31,19 @@ window.CONDO = {
   scoring: { eyebrow:"BeLive Co-Living Scoring Grid", recommended:true, rows:[ {label:"Location Connectivity",note:"",score:0}, {label:"Tenant Demand Strength",note:"",score:0}, {label:"Public Transport Access",note:"",score:0}, {label:"Rental Yield Potential",note:"",score:0}, {label:"Facilities & Lifestyle Appeal",note:"",score:0}, {label:"Co-Living Compatibility",note:"",score:0}, {label:"Market Affordability Match",note:"",score:0}, {label:"Supply & Competition Risk",note:"",score:0}, {label:"Operational Scalability",note:"",score:0}, {label:"Long-Term Growth Potential",note:"",score:0} ], grade:"" },
   proof: { referenceCondo:"", occupancyImage:"", asOfDate:"" },
   roi: { waLink:"https://wa.link/yxfq39", priceSlider:{min:0,max:0,step:5000}, gradeAThreshold:5.5, types:{ A:{ label:"", spec:"", floorplan:"", defaultPrice:0, wholeLo:0, wholeHi:0, rooms:[{id:"r2",name:"Room 2 (Queen)",lo:0,hi:0},{id:"r3",name:"Room 3 (Ensuite Master)",lo:0,hi:0},{id:"r4",name:"Room 4 (Queen)",lo:0,hi:0}], extras:[{id:"partition",name:"Room 1 (Partition)",lo:0,hi:0},{id:"parking",name:"Parking",lo:0,hi:0}] } }, defaultType:"A" },
-  renoFreeTag: ""
-};`;
+  renoFreeTag: "",
+  dev: {
+    hero: { eyebrow:"A Co-Living Operating Partnership", sub:"<one sentence, developer-framed: partner with BeLive to operate co-living across [condo] — faster absorption, higher per-unit yield for buyers, ready tenant pipeline>", stats:[ {value:"",label:"Per-Unit Gross Yield"}, {value:"",label:"Total Units"}, {value:"Grade A",label:"Co-Living Asset"} ] },
+    cta: { label:"Discuss a partnership" },
+    partnerModel: { eyebrow:"A Co-Living Operating Partnership", title:"Partner with BeLive to operate co-living at scale.", lead:"<condo-specific one-liner>", items:[
+      {icon:"↑",head:"Faster absorption",body:""},
+      {icon:"%",head:"Higher per-unit yield",body:""},
+      {icon:"◎",head:"Ready tenant pipeline",body:""},
+      {icon:"⚙",head:"Hands-off management",body:""},
+      {icon:"◆",head:"Brand & standards",body:""},
+      {icon:"⤬",head:"Aligned incentives",body:""}
+    ] }
+  }
+};
+
+The "dev" block holds the DEVELOPER-audience framing. The shared facts, map, scoring and roi numbers stay identical for both audiences — only hero, cta and partnerModel differ. The admin tool picks owner (uses the top-level hero) or developer (swaps in dev.hero + dev.cta + dev.partnerModel). Fill both.`;
