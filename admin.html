@@ -667,7 +667,14 @@ async function generate(){
     $('genState').innerHTML='<span class="spin">Reading plans & pulling live comps… (up to ~90s)</span>';
     const r = await fetch('/api/generate',{ method:'POST', headers:{'content-type':'application/json','x-admin-password':pw()}, body:payload });
     const data = await readJson(r);
-    if(!r.ok) throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Generate failed');
+    if(!r.ok){
+      // The server couldn't assemble a complete data file — usually a one-off; a retry fixes it.
+      if(typeof data.error==='string' && /parse condo-data/i.test(data.error)){
+        try{ console.warn('generate incomplete', { stopReason:data.stopReason, length:data.length, tail:data.raw }); }catch(_){}
+        throw new Error('The AI didn’t finish writing the page this time. Please click Generate again — it almost always works on the next try.');
+      }
+      throw new Error(data.error ? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : 'Generate failed');
+    }
     BASE = parseCondo(data.condoData); BASE_SLUG = data.slug;
     if(!BASE) throw new Error('The generated data came back incomplete. Please click Generate again — it usually works on a second try.');
     // Attach the uploaded condo logo so it shows next to the BeLive logo on the page.

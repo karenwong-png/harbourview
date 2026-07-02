@@ -68,8 +68,9 @@ module.exports = async (req, res) => {
     let messages = [{ role: 'user', content }];
     let acc = '';                 // accumulated text across continuation turns
     let finalText = null;
+    let lastStop = null;
 
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 24; i++) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -79,32 +80,37 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           model: MODEL,
-          max_tokens: 8000,
+          max_tokens: 16000,
           system: SYSTEM,
-          tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 12 }],
+          tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 8 }],
           messages,
         }),
       });
       const data = await r.json();
       if (data.type === 'error' || data.error) return res.status(502).json({ error: data.error || data });
-      const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+      lastStop = data.stop_reason;
+      const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
 
-      if (data.stop_reason === 'pause_turn') {           // web search in progress
+      if (data.stop_reason === 'pause_turn') {           // web search in progress — resume the turn
         messages.push({ role: 'assistant', content: data.content });
         continue;
       }
+      acc += text;
       if (data.stop_reason === 'max_tokens') {            // output truncated — ask it to continue
-        acc += text;
         messages.push({ role: 'assistant', content: data.content });
         messages.push({ role: 'user', content: 'Continue the JavaScript exactly where you left off. Do not repeat anything already written and do not add any explanation — output only the remaining code.' });
         continue;
       }
-      finalText = acc + text;                            // end_turn / stop_sequence
+      finalText = acc;                                   // end_turn / stop_sequence
       break;
     }
+    if (finalText === null) finalText = acc;             // ran out of turns — try what we have
 
     const condoData = extractCondo(finalText);
-    if (!condoData) return res.status(502).json({ error: 'Could not parse condo-data from model output', raw: (finalText || '').slice(-1200) });
+    if (!condoData) return res.status(502).json({
+      error: 'Could not parse condo-data from model output',
+      stopReason: lastStop, length: (finalText || '').length, raw: (finalText || '').slice(-1500),
+    });
 
     return res.status(200).json({ slug: slugify(name), condoData });
   } catch (e) {
